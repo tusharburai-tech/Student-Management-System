@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Attendance &mdash; Student Management System</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body class="attendance-page">
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<div class="app-wrapper">
+    <!-- Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content-wrapper">
+        <!-- Topbar Fragment -->
+        <div th:replace="~{fragments/topbar :: topbar('Attendance Management', 'Academics', 'Attendance')}"></div>
+
+        <main class="main-content">
+            <!-- Toast Notifications -->
+            <div th:if="${successMessage}" class="alert-sms alert-sms-success">
+                <span><i class="bi bi-check-circle-fill"></i> <span th:text="${successMessage}">Success message</span></span>
+                <button class="alert-sms-close" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+
+            <!-- Header Block -->
+            <div class="page-header-block">
+                <div class="page-header-info">
+                    <h2>Daily Roll Call &amp; Attendance Tracking</h2>
+                    <p>Track student presence, verify excuses, inspect historical logs, and record classroom attendance.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/attendance/export-csv(date=${selectedDate}, department=${selectedDept}, courseId=${selectedCourseId}, semester=${selectedSemester})}" class="btn-outline-sms">
+                        <i class="bi bi-file-earmark-arrow-down"></i> Export Sheet
+                    </a>
+                    <button type="button" class="btn-primary-sms" onclick="openModal('batchAttendanceModal')">
+                        <i class="bi bi-clipboard-check-fill"></i> + Record Session Attendance
+                    </button>
+                </div>
+            </div>
+
+            <!-- Attendance Summary Metrics (4 cards) -->
+            <section class="stats-grid" style="margin-bottom: 24px;">
+                <!-- Total Students on Record -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon blue">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <span class="stat-growth neutral">Enrolled</span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value" th:text="${allStudents != null ? #lists.size(allStudents) : 0}">10</h3>
+                        <p class="stat-label">Total Active Students</p>
+                        <p class="stat-footer-text">In session schedule today</p>
+                    </div>
+                </div>
+
+                <!-- Present Today -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon emerald">
+                            <i class="bi bi-person-check-fill"></i>
+                        </div>
+                        <span class="stat-growth positive">Attended</span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value" th:text="${metrics.present != null ? metrics.present : 6}">6</h3>
+                        <p class="stat-label">Students Present</p>
+                        <p class="stat-footer-text">Checked into lectures</p>
+                    </div>
+                </div>
+
+                <!-- Absent Today -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon purple" style="background-color: var(--color-danger-bg); color: var(--color-danger);">
+                            <i class="bi bi-person-x-fill"></i>
+                        </div>
+                        <span class="stat-growth" style="background-color: var(--color-danger-bg); color: var(--color-danger);">Unexcused</span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value" th:text="${metrics.absent != null ? metrics.absent : 1}">1</h3>
+                        <p class="stat-label">Students Absent</p>
+                        <p class="stat-footer-text">Without advance medical notice</p>
+                    </div>
+                </div>
+
+                <!-- Attendance Percentage -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon indigo">
+                            <i class="bi bi-pie-chart-fill"></i>
+                        </div>
+                        <span class="stat-growth positive">+4.5%</span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value" th:text="${metrics.rate != null ? metrics.rate : 92} + '%'">92%</h3>
+                        <p class="stat-label">Attendance Rate</p>
+                        <p class="stat-footer-text">Overall campus average</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filters Section -->
+            <div class="filter-card">
+                <form th:action="@{/attendance}" method="get" class="filter-form-grid attendance-filter-grid" id="attendanceFilterForm">
+                    <!-- Date -->
+                    <div class="filter-group">
+                        <label class="filter-label" for="attendanceDatePicker">Attendance Date</label>
+                        <input type="date" id="attendanceDatePicker" name="date" th:value="${selectedDate}" class="filter-input">
+                    </div>
+
+                    <!-- Department -->
+                    <div class="filter-group">
+                        <label class="filter-label" for="attendanceDept">Department</label>
+                        <select id="attendanceDept" name="department" class="filter-input" onchange="this.form.submit()">
+                            <option value="">All Departments</option>
+                            <option th:each="d : ${departments}" th:value="${d.name()}" th:text="${d.fullName}"
+                                    th:selected="${selectedDept != null and selectedDept.name() == d.name()}">Computer Science</option>
+                        </select>
+                    </div>
+
+                    <!-- Course -->
+                    <div class="filter-group">
+                        <label class="filter-label" for="attendanceCourse">Course Subject</label>
+                        <select id="attendanceCourse" name="courseId" class="filter-input" onchange="this.form.submit()">
+                            <option value="">All Courses</option>
+                            <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.courseCode + ' - ' + c.courseName}"
+                                    th:selected="${selectedCourseId != null and selectedCourseId == c.id}">CS101</option>
+                        </select>
+                    </div>
+
+                    <!-- Semester -->
+                    <div class="filter-group">
+                        <label class="filter-label" for="attendanceSemester">Semester</label>
+                        <select id="attendanceSemester" name="semester" class="filter-input" onchange="this.form.submit()">
+                            <option value="">All Semesters</option>
+                            <option value="Semester 1" th:selected="${selectedSemester == 'Semester 1'}">Semester 1</option>
+                            <option value="Semester 2" th:selected="${selectedSemester == 'Semester 2'}">Semester 2</option>
+                            <option value="Semester 3" th:selected="${selectedSemester == 'Semester 3'}">Semester 3</option>
+                            <option value="Semester 4" th:selected="${selectedSemester == 'Semester 4'}">Semester 4</option>
+                            <option value="Semester 5" th:selected="${selectedSemester == 'Semester 5'}">Semester 5</option>
+                            <option value="Semester 6" th:selected="${selectedSemester == 'Semester 6'}">Semester 6</option>
+                            <option value="Semester 7" th:selected="${selectedSemester == 'Semester 7'}">Semester 7</option>
+                            <option value="Semester 8" th:selected="${selectedSemester == 'Semester 8'}">Semester 8</option>
+                        </select>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn-primary-sms" style="height: 42px;">
+                            <i class="bi bi-funnel-fill"></i> Filter
+                        </button>
+                        <a th:href="@{/attendance}" class="btn-outline-sms" style="height: 42px;" title="Reset">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Attendance Records Table -->
+            <div class="sms-card" style="overflow: hidden;">
+                <div class="table-responsive">
+                    <table class="sms-table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Student Name</th>
+                                <th>Department</th>
+                                <th>Course Subject</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Remarks</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="att : ${records}">
+                                <td>
+                                    <span style="font-weight: 700; color: var(--primary-blue);" th:text="${att.student.studentId}">SMS-2024-101</span>
+                                </td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar" th:text="${att.student.initials}">AW</div>
+                                        <div class="student-name-box">
+                                            <a th:href="@{/students/{id}(id=${att.student.id})}" class="student-fullname" th:text="${att.student.fullName}">Alexander Wright</a>
+                                            <span class="student-email" th:text="${att.student.email}">a.wright@university.edu</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span th:text="${att.student.department != null ? att.student.department.fullName : 'General'}">Computer Science</span>
+                                </td>
+                                <td>
+                                    <span style="font-weight: 600;" th:text="${att.courseName != null ? att.courseName : (att.course != null ? att.course.courseName : 'General Lecture')}">Data Structures</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge" th:classappend="${att.status.badgeClass}" th:text="${att.status.label}">Present</span>
+                                </td>
+                                <td>
+                                    <span th:text="${#temporals.format(att.attendanceDate, 'MMM dd, yyyy')}">Nov 06, 2026</span>
+                                </td>
+                                <td>
+                                    <span style="color: var(--text-muted); font-size: 13px;" th:text="${att.remarks != null ? att.remarks : 'Recorded'}">On time</span>
+                                </td>
+                                <td style="text-align: right;">
+                                    <button type="button" class="btn-icon-sms" title="Quick Update Attendance" 
+                                            th:data-student-id="${att.student.id}"
+                                            th:data-student-name="${att.student.fullName}"
+                                            th:data-course-id="${att.course != null ? att.course.id : 1}"
+                                            onclick="openQuickMarkModal(this.getAttribute('data-student-id'), this.getAttribute('data-student-name'), this.getAttribute('data-course-id'))">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(records)}">
+                                <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                    <div class="empty-state" style="padding: 20px 0;">
+                                        <div class="empty-state-icon"><i class="bi bi-calendar-x"></i></div>
+                                        <h3>No Attendance Records for Selected Criteria</h3>
+                                        <p>Click "Record Session Attendance" above to mark attendance for this date.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer Fragment -->
+        <div th:replace="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+
+<!-- Modal 1: Quick Single Attendance Update Modal -->
+<div class="modal-overlay" id="quickMarkAttendanceModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="bi bi-person-check text-primary"></i> Update Attendance Status</h3>
+            <button type="button" class="modal-close-btn" onclick="closeModal('quickMarkAttendanceModal')">&times;</button>
+        </div>
+        <form th:action="@{/attendance/mark}" method="post">
+            <input type="hidden" id="quickMarkStudentId" name="studentId">
+            <input type="hidden" name="date" th:value="${selectedDate}">
+
+            <div class="modal-body">
+                <p style="font-size: 14px; margin-bottom: 18px;">
+                    Student: <strong id="quickMarkStudentName" style="color: var(--primary-navy);">Student Name</strong>
+                </p>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label class="form-label" for="quickMarkCourseSelect">Course Subject</label>
+                    <select id="quickMarkCourseSelect" name="courseId" class="form-select-sms" required>
+                        <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.courseCode + ' - ' + c.courseName}">CS101</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label class="form-label">Attendance Status</label>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                        <label style="border: 1px solid var(--border-color); padding: 10px; border-radius: var(--radius-md); text-align: center; cursor: pointer;">
+                            <input type="radio" name="status" value="PRESENT" checked style="accent-color: var(--color-success);">
+                            <div style="font-size: 12px; font-weight: 700; color: var(--color-success); margin-top: 4px;">Present</div>
+                        </label>
+                        <label style="border: 1px solid var(--border-color); padding: 10px; border-radius: var(--radius-md); text-align: center; cursor: pointer;">
+                            <input type="radio" name="status" value="ABSENT" style="accent-color: var(--color-danger);">
+                            <div style="font-size: 12px; font-weight: 700; color: var(--color-danger); margin-top: 4px;">Absent</div>
+                        </label>
+                        <label style="border: 1px solid var(--border-color); padding: 10px; border-radius: var(--radius-md); text-align: center; cursor: pointer;">
+                            <input type="radio" name="status" value="LATE" style="accent-color: var(--color-warning);">
+                            <div style="font-size: 12px; font-weight: 700; color: var(--color-warning); margin-top: 4px;">Late</div>
+                        </label>
+                        <label style="border: 1px solid var(--border-color); padding: 10px; border-radius: var(--radius-md); text-align: center; cursor: pointer;">
+                            <input type="radio" name="status" value="LEAVE" style="accent-color: var(--color-info);">
+                            <div style="font-size: 12px; font-weight: 700; color: var(--color-info); margin-top: 4px;">Leave</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="quickMarkRemarks">Notes / Justification</label>
+                    <input type="text" id="quickMarkRemarks" name="remarks" class="form-control-sms" placeholder="e.g. Arrived 10 mins late due to transit">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline-sms" onclick="closeModal('quickMarkAttendanceModal')">Cancel</button>
+                <button type="submit" class="btn-primary-sms">Save Attendance</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal 2: Session Roll Call (Bulk Mark) Modal -->
+<div class="modal-overlay" id="batchAttendanceModal">
+    <div class="modal-container" style="max-width: 720px;">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="bi bi-clipboard2-check text-primary"></i> Classroom Session Roll Call</h3>
+            <button type="button" class="modal-close-btn" onclick="closeModal('batchAttendanceModal')">&times;</button>
+        </div>
+        <form th:action="@{/attendance/batch-save}" method="post">
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label class="form-label" for="batchCourseId">Select Course</label>
+                        <select id="batchCourseId" name="courseId" class="form-select-sms" required>
+                            <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.courseCode + ' - ' + c.courseName}">CS101</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="batchDate">Session Date</label>
+                        <input type="date" id="batchDate" name="date" th:value="${selectedDate}" class="form-control-sms" required>
+                    </div>
+                </div>
+
+                <!-- Shortcuts -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; background: #F8FAFC; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                    <span style="font-size: 13px; font-weight: 700; color: var(--text-main);">Quick Action:</span>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn-outline-sms" style="font-size: 12px; padding: 4px 10px;" onclick="setAllAttendanceStatus('PRESENT')">
+                            Mark All Present
+                        </button>
+                        <button type="button" class="btn-outline-sms" style="font-size: 12px; padding: 4px 10px;" onclick="setAllAttendanceStatus('ABSENT')">
+                            Mark All Absent
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Students Roll Table -->
+                <div style="max-height: 320px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                    <table class="sms-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Department</th>
+                                <th style="text-align: right;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="st, iter : ${allStudents}">
+                                <td>
+                                    <input type="hidden" name="studentIds" th:value="${st.id}">
+                                    <div class="student-cell">
+                                        <div class="student-avatar" style="width: 32px; height: 32px; font-size: 11px;" th:text="${st.initials}">AW</div>
+                                        <div>
+                                            <div style="font-weight: 700; font-size: 13px;" th:text="${st.fullName}">Alexander Wright</div>
+                                            <div style="font-size: 11px; color: var(--text-muted);" th:text="${st.studentId}">SMS-2024-101</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span style="font-size: 12px;" th:text="${st.department != null ? st.department.fullName : 'General'}">CS</span>
+                                </td>
+                                <td style="text-align: right;">
+                                    <div class="d-inline-flex gap-2">
+                                        <label title="Present" style="cursor: pointer; font-size: 12px; font-weight: 700; color: var(--color-success);">
+                                            <input type="radio" th:name="'statuses[' + ${iter.index} + ']'" value="PRESENT" checked style="accent-color: var(--color-success);"> P
+                                        </label>
+                                        <label title="Absent" style="cursor: pointer; font-size: 12px; font-weight: 700; color: var(--color-danger);">
+                                            <input type="radio" th:name="'statuses[' + ${iter.index} + ']'" value="ABSENT" style="accent-color: var(--color-danger);"> A
+                                        </label>
+                                        <label title="Late" style="cursor: pointer; font-size: 12px; font-weight: 700; color: var(--color-warning);">
+                                            <input type="radio" th:name="'statuses[' + ${iter.index} + ']'" value="LATE" style="accent-color: var(--color-warning);"> L
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline-sms" onclick="closeModal('batchAttendanceModal')">Cancel</button>
+                <button type="submit" class="btn-primary-sms">
+                    <i class="bi bi-check2-all"></i> Submit &amp; Save Attendance
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/attendance.js}"></script>
+</body>
+</html>

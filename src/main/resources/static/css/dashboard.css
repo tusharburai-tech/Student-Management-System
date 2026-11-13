@@ -1,0 +1,334 @@
+/* ===================================================================
+   DASHBOARD SPECIFIC STYLES
+   =================================================================== */
+
+/* Welcome Banner */
+.welcome-banner {
+    background: linear-gradient(135deg, #172554 0%, #1E3A8A 55%, #2563EB 100%);
+    border-radius: var(--radius-xl);
+    padding: 32px 36px;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    box-shadow: 0 10px 25px -5px rgba(23, 37, 84, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-banner::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    bottom: -60px;
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.welcome-text h1 {
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 6px 0;
+    letter-spacing: -0.02em;
+}
+
+.welcome-text p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 12px 0;
+}
+
+.welcome-date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.welcome-action .btn-welcome {
+    background: #FFFFFF;
+    color: var(--primary-navy);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 22px;
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    transition: var(--transition);
+}
+
+.welcome-action .btn-welcome:hover {
+    background: #F8FAFC;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    color: var(--primary-blue);
+}
+
+/* Statistics Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--shadow-card);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+    border-color: #CBD5E1;
+}
+
+.stat-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.stat-icon.blue {
+    background-color: #EFF6FF;
+    color: #2563EB;
+}
+
+.stat-icon.indigo {
+    background-color: #EEF2FF;
+    color: #4F46E5;
+}
+
+.stat-icon.emerald {
+    background-color: #ECFDF5;
+    color: #059669;
+}
+
+.stat-icon.purple {
+    background-color: #FAF5FF;
+    color: #9333EA;
+}
+
+.stat-growth {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+}
+
+.stat-growth.positive {
+    background-color: #DCFCE7;
+    color: #15803D;
+}
+
+.stat-growth.neutral {
+    background-color: #EFF6FF;
+    color: #1D4ED8;
+}
+
+.stat-value {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--primary-navy);
+    line-height: 1.1;
+    margin: 0 0 4px 0;
+    letter-spacing: -0.02em;
+}
+
+.stat-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin: 0 0 6px 0;
+}
+
+.stat-footer-text {
+    font-size: 11px;
+    color: var(--text-subtle);
+    margin: 0;
+}
+
+/* Analytics Row (Enrollment Chart + Department Doughnut) */
+.analytics-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.chart-container-lg {
+    position: relative;
+    height: 320px;
+    width: 100%;
+}
+
+.chart-container-sm {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+.doughnut-legend-list {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+}
+
+.doughnut-legend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.legend-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.legend-name {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.legend-value {
+    font-weight: 700;
+    color: var(--primary-navy);
+}
+
+/* Bottom Grid (Recent Students + Recent Activity) */
+.dashboard-bottom-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+
+/* Activity Feed */
+.activity-feed {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    position: relative;
+}
+
+.activity-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 36px;
+    bottom: -16px;
+    width: 2px;
+    background-color: var(--border-color);
+}
+
+.activity-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.badge-activity-primary {
+    background-color: #EFF6FF;
+    color: #2563EB;
+}
+
+.badge-activity-success {
+    background-color: #DCFCE7;
+    color: #16A34A;
+}
+
+.badge-activity-warning {
+    background-color: #FEF3C7;
+    color: #D97706;
+}
+
+.badge-activity-info {
+    background-color: #E0F2FE;
+    color: #0284C7;
+}
+
+.badge-activity-danger {
+    background-color: #FEE2E2;
+    color: #DC2626;
+}
+
+.activity-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-navy);
+    margin: 0 0 2px 0;
+}
+
+.activity-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0 0 4px 0;
+    line-height: 1.4;
+}
+
+.activity-time {
+    font-size: 11px;
+    color: var(--text-subtle);
+    font-weight: 500;
+}

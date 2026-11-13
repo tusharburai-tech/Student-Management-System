@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Dashboard &mdash; Student Management System</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<div class="app-wrapper">
+    <!-- Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content-wrapper">
+        <!-- Topbar Fragment -->
+        <div th:replace="~{fragments/topbar :: topbar('University Dashboard', 'Administration', 'Overview')}"></div>
+
+        <main class="main-content">
+            <!-- Welcome Section Banner -->
+            <section class="welcome-banner">
+                <div class="welcome-text">
+                    <h1>Good Morning, Admin!</h1>
+                    <p>Here's what's happening at your university today across departments and lecture halls.</p>
+                    <div class="welcome-date-badge">
+                        <i class="bi bi-clock-history"></i>
+                        <span th:text="${currentDateFormatted}">Monday, November 06, 2026</span>
+                    </div>
+                </div>
+                <div class="welcome-action">
+                    <a th:href="@{/students/add}" class="btn-welcome">
+                        <i class="bi bi-person-plus-fill"></i> + Add New Student
+                    </a>
+                </div>
+            </section>
+
+            <!-- 4 Statistics Cards -->
+            <section class="stats-grid">
+                <!-- Card 1: Total Students -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon blue">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+                        <span class="stat-growth positive">
+                            <i class="bi bi-arrow-up-short"></i>
+                            <span th:text="${stats.studentGrowth}">+12.5%</span>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value" th:text="${stats.totalStudents}">2,450</h3>
+                        <p class="stat-label">Total Enrolled Students</p>
+                        <p class="stat-footer-text">Higher than last academic cycle</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Total Courses -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon indigo">
+                            <i class="bi bi-book-half"></i>
+                        </div>
+                        <span class="stat-growth positive">
+                            <i class="bi bi-arrow-up-short"></i>
+                            <span th:text="${stats.courseGrowth}">+8.2%</span>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value" th:text="${stats.totalCourses}">48</h3>
+                        <p class="stat-label">Active Academic Courses</p>
+                        <p class="stat-footer-text">Across 6 academic faculties</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Attendance Rate -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon emerald">
+                            <i class="bi bi-clipboard2-check-fill"></i>
+                        </div>
+                        <span class="stat-growth positive">
+                            <i class="bi bi-arrow-up-short"></i>
+                            <span th:text="${stats.attendanceGrowth}">+4.5%</span>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value" th:text="${stats.attendanceRate} + '%'">92.8%</h3>
+                        <p class="stat-label">Overall Attendance Rate</p>
+                        <p class="stat-footer-text">Average across morning sessions</p>
+                    </div>
+                </div>
+
+                <!-- Card 4: Active Departments -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon purple">
+                            <i class="bi bi-buildings-fill"></i>
+                        </div>
+                        <span class="stat-growth neutral">
+                            <i class="bi bi-plus-circle"></i>
+                            <span th:text="${stats.departmentGrowth}">+2 depts</span>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value" th:text="${stats.activeDepartments}">6</h3>
+                        <p class="stat-label">Active Departments</p>
+                        <p class="stat-footer-text">Engineering, Tech &amp; Business</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section (Charts) -->
+            <section class="analytics-grid">
+                <!-- Enrollment Line / Area Chart -->
+                <div class="sms-card">
+                    <div class="sms-card-header">
+                        <div>
+                            <h3 class="sms-card-title">Student Enrollment Trends</h3>
+                            <p class="sms-card-subtitle">Monthly enrollment comparison between current and previous academic year</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a th:href="@{/reports}" class="btn-outline-sms" style="font-size: 12px; padding: 6px 12px;">
+                                <i class="bi bi-bar-chart-line"></i> View Detailed Report
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sms-card-body">
+                        <div class="chart-container-lg">
+                            <canvas id="enrollmentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Department Distribution Doughnut Chart -->
+                <div class="sms-card">
+                    <div class="sms-card-header">
+                        <div>
+                            <h3 class="sms-card-title">Faculty Distribution</h3>
+                            <p class="sms-card-subtitle">Student share by discipline</p>
+                        </div>
+                    </div>
+                    <div class="sms-card-body">
+                        <div class="chart-container-sm">
+                            <canvas id="deptChart"
+                                    th:data-labels="${#strings.arrayJoin(deptDistribution.keySet().toArray(), '|')}"
+                                    th:data-values="${#strings.arrayJoin(deptDistribution.values().toArray(), '|')}"></canvas>
+                        </div>
+                        <ul class="doughnut-legend-list">
+                            <li class="doughnut-legend-item" th:each="entry, iter : ${deptDistribution}">
+                                <span>
+                                    <span class="legend-color-dot" th:style="'background:' + (${iter.index == 0 ? '#2563EB' : (iter.index == 1 ? '#0284C7' : (iter.index == 2 ? '#059669' : (iter.index == 3 ? '#F59E0B' : (iter.index == 4 ? '#7C3AED' : '#64748B'))))}) + ';'"></span>
+                                    <span class="legend-name" th:text="${entry.key}">Department</span>
+                                </span>
+                                <span class="legend-value" th:text="${entry.value} + ' students'">0</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bottom Row: Recent Students Table + Recent Activity -->
+            <section class="dashboard-bottom-grid">
+                <!-- Recent Students -->
+                <div class="sms-card">
+                    <div class="sms-card-header">
+                        <div>
+                            <h3 class="sms-card-title">Recently Enrolled Students</h3>
+                            <p class="sms-card-subtitle">Newest student matriculations in the system</p>
+                        </div>
+                        <a th:href="@{/students}" class="btn-outline-sms" style="font-size: 13px; padding: 6px 14px;">
+                            View All Students <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="sms-card-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="sms-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Student Name</th>
+                                        <th>Department</th>
+                                        <th>Enrollment</th>
+                                        <th>Status</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="student : ${recentStudents}">
+                                        <td>
+                                            <span style="font-weight: 700; font-size: 13px; color: var(--primary-blue);" th:text="${student.studentId}">SMS-2024-001</span>
+                                        </td>
+                                        <td>
+                                            <div class="student-cell">
+                                                <div class="student-avatar" th:text="${student.initials}">AW</div>
+                                                <div class="student-name-box">
+                                                    <span class="student-fullname" th:text="${student.fullName}">Alexander Wright</span>
+                                                    <span class="student-email" th:text="${student.email}">a.wright@university.edu</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span th:text="${student.department != null ? student.department.fullName : 'General Studies'}">Computer Science</span>
+                                        </td>
+                                        <td>
+                                            <span th:text="${#temporals.format(student.enrollmentDate, 'MMM dd, yyyy')}">Aug 20, 2023</span>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge" th:classappend="${student.status.badgeClass}" th:text="${student.status.label}">Active</span>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <div style="display: inline-flex; gap: 6px;">
+                                                <a th:href="@{/students/{id}(id=${student.id})}" class="btn-icon-sms" title="View Profile">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn-icon-sms" title="Edit Student">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(recentStudents)}">
+                                        <td colspan="6" style="text-align: center; padding: 32px; color: var(--text-muted);">
+                                            No recent students found. Click "+ Add New Student" to enroll your first student.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Panel -->
+                <div class="sms-card">
+                    <div class="sms-card-header">
+                        <div>
+                            <h3 class="sms-card-title">Recent Activity</h3>
+                            <p class="sms-card-subtitle">Real-time system actions</p>
+                        </div>
+                        <i class="bi bi-activity text-muted"></i>
+                    </div>
+                    <div class="sms-card-body">
+                        <ul class="activity-feed">
+                            <li class="activity-item" th:each="log : ${recentActivities}">
+                                <div class="activity-icon" th:classappend="${log.badgeClass}">
+                                    <i class="bi" th:classappend="${log.icon}"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4 class="activity-title" th:text="${log.title}">New Student Registered</h4>
+                                    <p class="activity-desc" th:text="${log.description}">Alexander Wright was enrolled in Computer Science</p>
+                                    <span class="activity-time" th:text="${#temporals.format(log.createdAt, 'hh:mm a')}">10:30 AM</span>
+                                </div>
+                            </li>
+                            <li th:if="${#lists.isEmpty(recentActivities)}" style="text-align: center; color: var(--text-muted); padding: 20px 0;">
+                                No system activities logged yet.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer Fragment -->
+        <div th:replace="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+
+<!-- Chart.js and Custom JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/charts.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${student.fullName + ' - Student Profile'}">Student Profile &mdash; SMS</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/students.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<div class="app-wrapper">
+    <!-- Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content-wrapper">
+        <!-- Topbar Fragment -->
+        <div th:replace="~{fragments/topbar :: topbar('Student Profile', 'Students', ${student.fullName})}"></div>
+
+        <main class="main-content">
+            <!-- Toast Notifications -->
+            <div th:if="${successMessage}" class="alert-sms alert-sms-success">
+                <span><i class="bi bi-check-circle-fill"></i> <span th:text="${successMessage}">Success</span></span>
+                <button class="alert-sms-close" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+
+            <!-- Profile Hero Header Card -->
+            <div class="profile-hero-card">
+                <div class="profile-hero-left">
+                    <div class="profile-avatar-lg" th:text="${student.initials}">AW</div>
+                    <div class="profile-details-hero">
+                        <div class="d-flex align-items-center gap-3 mb-1">
+                            <h2 th:text="${student.fullName}">Alexander Wright</h2>
+                            <span class="status-badge" th:classappend="${student.status.badgeClass}" th:text="${student.status.label}">Active</span>
+                        </div>
+                        <div class="profile-meta-tags">
+                            <span class="profile-meta-item">
+                                <i class="bi bi-upc-scan"></i> <strong th:text="${student.studentId}">SMS-2024-101</strong>
+                            </span>
+                            <span>&bull;</span>
+                            <span class="profile-meta-item">
+                                <i class="bi bi-building"></i> <span th:text="${student.department != null ? student.department.fullName : 'Engineering'}">Computer Science</span>
+                            </span>
+                            <span>&bull;</span>
+                            <span class="profile-meta-item">
+                                <i class="bi bi-mortarboard"></i> <span th:text="${student.semester}">Semester 4</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a th:href="@{/students}" class="btn-outline-sms">
+                        <i class="bi bi-arrow-left"></i> Back to Students
+                    </a>
+                    <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn-primary-sms">
+                        <i class="bi bi-pencil-square"></i> Edit Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Two-Column Profile Content Layout -->
+            <div class="profile-grid-layout">
+                <!-- Left Column: Personal, Academic & Course Details -->
+                <div class="d-flex flex-column gap-4">
+                    <!-- Academic Details Card -->
+                    <div class="sms-card">
+                        <div class="sms-card-header">
+                            <h3 class="sms-card-title"><i class="bi bi-mortarboard text-primary"></i> Academic Information</h3>
+                            <span class="badge-status-active status-badge">Enrolled</span>
+                        </div>
+                        <div class="sms-card-body" style="padding: 0;">
+                            <table class="info-details-table">
+                                <tr>
+                                    <td class="label-col">Department</td>
+                                    <td class="value-col" th:text="${student.department != null ? student.department.fullName : 'General Studies'}">Computer Science</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Primary Course</td>
+                                    <td class="value-col" th:text="${student.courseName != null ? student.courseName : 'CS204 - Data Structures'}">Data Structures &amp; Algorithms</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Semester &amp; Cycle</td>
+                                    <td class="value-col" th:text="${student.semester + ' (' + student.academicYear + ')'}">Semester 4 (2023-2027)</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Date of Matriculation</td>
+                                    <td class="value-col" th:text="${#temporals.format(student.enrollmentDate, 'MMMM dd, yyyy')}">August 20, 2023</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Cumulative GPA</td>
+                                    <td class="value-col">
+                                        <span style="font-size: 16px; font-weight: 800; color: var(--primary-blue);" th:text="${student.gpa != null ? student.gpa : '3.65'}">3.65</span> / 4.00
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Personal Information Card -->
+                    <div class="sms-card">
+                        <div class="sms-card-header">
+                            <h3 class="sms-card-title"><i class="bi bi-person text-primary"></i> Personal Details &amp; Contact</h3>
+                        </div>
+                        <div class="sms-card-body" style="padding: 0;">
+                            <table class="info-details-table">
+                                <tr>
+                                    <td class="label-col">Email Address</td>
+                                    <td class="value-col">
+                                        <a th:href="'mailto:' + ${student.email}" th:text="${student.email}">a.wright@university.edu</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Phone Number</td>
+                                    <td class="value-col" th:text="${student.phone}">+1 (555) 234-8901</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Gender</td>
+                                    <td class="value-col" th:text="${student.gender != null ? student.gender.displayName : 'Not Specified'}">Male</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Date of Birth</td>
+                                    <td class="value-col" th:text="${student.dateOfBirth != null ? #temporals.format(student.dateOfBirth, 'MMMM dd, yyyy') : 'N/A'}">April 15, 2003</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Residential Address</td>
+                                    <td class="value-col" th:text="${student.address != null ? (student.address + ', ' + student.city + ', ' + student.state + ' ' + student.pinCode) : '742 Evergreen Terrace, Boston, MA 02108'}">
+                                        742 Evergreen Terrace, Boston, MA 02108
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Attendance History Table -->
+                    <div class="sms-card">
+                        <div class="sms-card-header">
+                            <h3 class="sms-card-title"><i class="bi bi-calendar2-check text-primary"></i> Recent Attendance Records</h3>
+                            <a th:href="@{/attendance}" class="btn-outline-sms" style="font-size: 12px; padding: 4px 10px;">Mark New</a>
+                        </div>
+                        <div class="sms-card-body" style="padding: 0;">
+                            <table class="sms-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Course Subject</th>
+                                        <th>Status</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="att : ${attendanceRecords}">
+                                        <td th:text="${#temporals.format(att.attendanceDate, 'MMM dd, yyyy')}">Nov 06, 2026</td>
+                                        <td th:text="${att.courseName != null ? att.courseName : 'Data Structures & Algorithms'}">CS204</td>
+                                        <td>
+                                            <span class="status-badge" th:classappend="${att.status.badgeClass}" th:text="${att.status.label}">Present</span>
+                                        </td>
+                                        <td style="color: var(--text-muted); font-size: 13px;" th:text="${att.remarks != null ? att.remarks : 'Recorded'}">On time</td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(attendanceRecords)}">
+                                        <td colspan="4" style="text-align: center; padding: 24px; color: var(--text-muted);">
+                                            No individual attendance records logged for this student yet.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Metrics & Summary -->
+                <div class="d-flex flex-column gap-4">
+                    <!-- Attendance Summary Card -->
+                    <div class="sms-card">
+                        <div class="sms-card-header">
+                            <h3 class="sms-card-title">Attendance Overview</h3>
+                        </div>
+                        <div class="sms-card-body">
+                            <div class="progress-stat-card">
+                                <div class="progress-header">
+                                    <span>Term Attendance Rate</span>
+                                    <span style="color: var(--color-success);" th:text="${student.attendanceRate != null ? student.attendanceRate : 92.5} + '%'">92.5%</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-fill success" th:style="'width: ' + ${student.attendanceRate != null ? student.attendanceRate : 92.5} + '%;'"></div>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px;">
+                                <div style="background: #F8FAFC; padding: 14px; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border-color);">
+                                    <div style="font-size: 20px; font-weight: 800; color: var(--color-success);">42</div>
+                                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Days Present</div>
+                                </div>
+                                <div style="background: #F8FAFC; padding: 14px; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border-color);">
+                                    <div style="font-size: 20px; font-weight: 800; color: var(--color-danger);">3</div>
+                                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Days Absent</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enrolled Courses Card -->
+                    <div class="sms-card">
+                        <div class="sms-card-header">
+                            <h3 class="sms-card-title">Registered Courses</h3>
+                            <a th:href="@{/courses}" class="text-primary" style="font-size: 12px; font-weight: 600;">Browse All</a>
+                        </div>
+                        <div class="sms-card-body" style="padding: 16px 20px;">
+                            <div style="display: flex; flex-direction: column; gap: 14px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle);">
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 14px; color: var(--primary-navy);">Data Structures &amp; Algorithms</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">CS204 &bull; Prof. Amanda Chen</div>
+                                    </div>
+                                    <span class="status-badge badge-status-active">4 Credits</span>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle);">
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 14px; color: var(--primary-navy);">Introduction to Computer Science</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">CS101 &bull; Dr. Robert Vance</div>
+                                    </div>
+                                    <span class="status-badge badge-status-active">3 Credits</span>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 14px; color: var(--primary-navy);">Artificial Intelligence &amp; Neural Nets</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">CS408 &bull; Dr. Amanda Chen</div>
+                                    </div>
+                                    <span class="status-badge badge-status-active">4 Credits</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer Fragment -->
+        <div th:replace="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

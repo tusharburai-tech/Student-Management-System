@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="topbar(pageTitle, breadcrumbParent, breadcrumbCurrent)" class="topbar">
+    <div class="topbar-left">
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <button type="button" class="btn-icon-sms d-none d-lg-inline-flex" id="sidebarToggleBtn" title="Toggle Sidebar">
+            <i class="bi bi-layout-sidebar"></i>
+        </button>
+
+        <div class="page-headline">
+            <h1 class="page-title" th:text="${pageTitle}">Dashboard</h1>
+            <ul class="breadcrumbs">
+                <li><a th:href="@{/dashboard}"><i class="bi bi-house-door"></i> Home</a></li>
+                <li th:if="${breadcrumbParent != null}" class="separator">/</li>
+                <li th:if="${breadcrumbParent != null}"><span th:text="${breadcrumbParent}">Section</span></li>
+                <li class="separator">/</li>
+                <li><span class="active-crumb" th:text="${breadcrumbCurrent}">Overview</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="topbar-right">
+        <!-- Topbar Search -->
+        <form th:action="@{/students}" method="get" class="topbar-search">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" name="keyword" id="globalSearchInput" placeholder="Quick search students... (Ctrl+K)" autocomplete="off">
+        </form>
+
+        <!-- Current Date -->
+        <div class="date-indicator">
+            <i class="bi bi-calendar-event"></i>
+            <span th:text="${currentDateFormatted != null ? currentDateFormatted : #temporals.format(#temporals.createNow(), 'EEE, MMM dd, yyyy')}">Nov 06, 2026</span>
+        </div>
+
+        <!-- Notification Bell -->
+        <div class="notification-btn" title="3 Unread Notifications" onclick="alert('You have 3 academic system alerts: 1 pending grade submission, 2 leave requests.')">
+            <i class="bi bi-bell"></i>
+            <span class="notification-badge"></span>
+        </div>
+
+        <!-- User Profile Dropdown -->
+        <div class="topbar-user-dropdown" onclick="window.location.href='/settings'">
+            <div class="user-avatar-sm">AD</div>
+            <div class="user-info-text d-none d-md-block">
+                <p class="user-name">Dr. Arthur Pendelton</p>
+                <p class="user-role">Dean of Administration</p>
+            </div>
+            <i class="bi bi-chevron-down text-muted" style="font-size: 11px;"></i>
+        </div>
+    </div>
+</header>
+</body>
+</html>

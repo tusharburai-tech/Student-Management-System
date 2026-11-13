@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Directory &mdash; Student Management System</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/students.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<div class="app-wrapper">
+    <!-- Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content-wrapper">
+        <!-- Topbar Fragment -->
+        <div th:replace="~{fragments/topbar :: topbar('Student Management', 'Administration', 'Students')}"></div>
+
+        <main class="main-content">
+            <!-- Toast Notifications -->
+            <div th:if="${successMessage}" class="alert-sms alert-sms-success">
+                <span><i class="bi bi-check-circle-fill"></i> <span th:text="${successMessage}">Success message</span></span>
+                <button class="alert-sms-close" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+            <div th:if="${errorMessage}" class="alert-sms alert-sms-danger">
+                <span><i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${errorMessage}">Error message</span></span>
+                <button class="alert-sms-close" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+
+            <!-- Page Header Block -->
+            <div class="page-header-block">
+                <div class="page-header-info">
+                    <h2>Student Management</h2>
+                    <p>Manage student information, academic details, and enrollment records across all departments.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/reports/export-csv}" class="btn-outline-sms">
+                        <i class="bi bi-cloud-arrow-down"></i> Export CSV
+                    </a>
+                    <a th:href="@{/students/add}" class="btn-primary-sms">
+                        <i class="bi bi-person-plus-fill"></i> + Add Student
+                    </a>
+                </div>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="filter-card">
+                <form th:action="@{/students}" method="get" class="filter-form-grid" id="studentsFilterForm">
+                    <!-- Search Input -->
+                    <div class="filter-group">
+                        <label class="filter-label" for="keyword">Search Records</label>
+                        <div style="position: relative;">
+                            <input type="text" id="keyword" name="keyword" th:value="${keyword}" class="filter-input" placeholder="Search by name, ID or email..." style="width: 100%; padding-left: 36px;">
+                            <i class="bi bi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-subtle);"></i>
+                        </div>
+                    </div>
+
+                    <!-- Department Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label" for="department">Department</label>
+                        <select id="department" name="department" class="filter-input" style="cursor: pointer;">
+                            <option value="">All Departments</option>
+                            <option th:each="dept : ${departments}" 
+                                    th:value="${dept.name()}" 
+                                    th:text="${dept.fullName}"
+                                    th:selected="${selectedDept != null and selectedDept.name() == dept.name()}">Computer Science</option>
+                        </select>
+                    </div>
+
+                    <!-- Enrollment Year Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label" for="year">Academic Year</label>
+                        <select id="year" name="year" class="filter-input" style="cursor: pointer;">
+                            <option value="">All Years</option>
+                            <option value="2024" th:selected="${selectedYear == '2024'}">2024</option>
+                            <option value="2023" th:selected="${selectedYear == '2023'}">2023</option>
+                            <option value="2022" th:selected="${selectedYear == '2022'}">2022</option>
+                            <option value="2021" th:selected="${selectedYear == '2021'}">2021</option>
+                        </select>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label" for="status">Student Status</label>
+                        <select id="status" name="status" class="filter-input" style="cursor: pointer;">
+                            <option value="">All Statuses</option>
+                            <option th:each="st : ${statuses}" 
+                                    th:value="${st.name()}" 
+                                    th:text="${st.label}"
+                                    th:selected="${selectedStatus != null and selectedStatus.name() == st.name()}">Active</option>
+                        </select>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn-primary-sms" style="height: 42px;">
+                            <i class="bi bi-funnel-fill"></i> Filter
+                        </button>
+                        <button type="button" class="btn-outline-sms" id="resetFilterBtn" style="height: 42px;" title="Reset filters">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Students Table Card -->
+            <div class="sms-card" style="overflow: hidden;">
+                <div class="table-responsive">
+                    <table class="sms-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 44px; text-align: center;">
+                                    <input type="checkbox" id="selectAllStudents" style="accent-color: var(--primary-blue); cursor: pointer;">
+                                </th>
+                                <th>
+                                    <a th:href="@{/students(keyword=${keyword}, department=${selectedDept}, status=${selectedStatus}, year=${selectedYear}, sortField='studentId', sortDir=${reverseSortDir})}" style="color: inherit; display: inline-flex; align-items: center; gap: 4px;">
+                                        Student ID <i class="bi bi-arrow-down-up" style="font-size: 11px;"></i>
+                                    </a>
+                                </th>
+                                <th>
+                                    <a th:href="@{/students(keyword=${keyword}, department=${selectedDept}, status=${selectedStatus}, year=${selectedYear}, sortField='fullName', sortDir=${reverseSortDir})}" style="color: inherit; display: inline-flex; align-items: center; gap: 4px;">
+                                        Student Profile <i class="bi bi-arrow-down-up" style="font-size: 11px;"></i>
+                                    </a>
+                                </th>
+                                <th>Contact Phone</th>
+                                <th>Department &amp; Semester</th>
+                                <th>Enrollment Date</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="student : ${students}">
+                                <td style="text-align: center;">
+                                    <input type="checkbox" class="student-row-check" th:value="${student.id}" style="accent-color: var(--primary-blue); cursor: pointer;">
+                                </td>
+                                <td>
+                                    <span style="font-weight: 700; color: var(--primary-blue);" th:text="${student.studentId}">SMS-2024-101</span>
+                                </td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar" th:text="${student.initials}">AW</div>
+                                        <div class="student-name-box">
+                                            <a th:href="@{/students/{id}(id=${student.id})}" class="student-fullname" th:text="${student.fullName}">Alexander Wright</a>
+                                            <span class="student-email" th:text="${student.email}">a.wright@university.edu</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span style="font-size: 13px;" th:text="${student.phone}">+1 (555) 234-8901</span>
+                                </td>
+                                <td>
+                                    <div style="display: flex; flex-direction: column;">
+                                        <span style="font-weight: 600;" th:text="${student.department != null ? student.department.fullName : 'General'}">Computer Science</span>
+                                        <span style="font-size: 12px; color: var(--text-muted);" th:text="${student.semester}">Semester 4</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span style="font-size: 13px;" th:text="${#temporals.format(student.enrollmentDate, 'MMM dd, yyyy')}">Aug 20, 2023</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge" th:classappend="${student.status.badgeClass}" th:text="${student.status.label}">Active</span>
+                                </td>
+                                <td style="text-align: right;">
+                                    <div style="display: inline-flex; gap: 6px;">
+                                        <a th:href="@{/students/{id}(id=${student.id})}" class="btn-icon-sms" title="View Profile">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn-icon-sms" title="Edit Student">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn-icon-sms danger" title="Delete Student" 
+                                                th:data-id="${student.id}"
+                                                th:data-name="${student.fullName}"
+                                                onclick="confirmDeleteStudent(this.getAttribute('data-id'), this.getAttribute('data-name'))">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Empty State -->
+                            <tr th:if="${#lists.isEmpty(students)}">
+                                <td colspan="8">
+                                    <div class="empty-state">
+                                        <div class="empty-state-icon">
+                                            <i class="bi bi-search"></i>
+                                        </div>
+                                        <h3>No Students Found</h3>
+                                        <p>No student records matched your current query or filter selections. Try clearing filters or add a new student.</p>
+                                        <div class="d-flex gap-2">
+                                            <a th:href="@{/students}" class="btn-outline-sms">Clear Filters</a>
+                                            <a th:href="@{/students/add}" class="btn-primary-sms">+ Add Student</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Bar -->
+                <div class="pagination-container" th:if="${totalPages > 0}">
+                    <div class="pagination-info">
+                        Showing <strong th:text="${(currentPage * pageSize) + 1}">1</strong> to 
+                        <strong th:text="${((currentPage + 1) * pageSize) > totalItems ? totalItems : ((currentPage + 1) * pageSize)}">10</strong> of 
+                        <strong th:text="${totalItems}">25</strong> students
+                    </div>
+                    <div class="pagination-controls">
+                        <!-- Prev -->
+                        <a th:href="@{/students(page=${currentPage - 1}, size=${pageSize}, keyword=${keyword}, department=${selectedDept}, status=${selectedStatus}, year=${selectedYear}, sortField=${sortField}, sortDir=${sortDir})}"
+                           class="page-btn" th:classappend="${currentPage == 0} ? 'disabled'" th:disabled="${currentPage == 0}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+
+                        <!-- Numbers -->
+                        <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}">
+                            <a th:href="@{/students(page=${pageNum}, size=${pageSize}, keyword=${keyword}, department=${selectedDept}, status=${selectedStatus}, year=${selectedYear}, sortField=${sortField}, sortDir=${sortDir})}"
+                               class="page-btn" th:classappend="${pageNum == currentPage} ? 'active'"
+                               th:text="${pageNum + 1}">1</a>
+                        </span>
+
+                        <!-- Next -->
+                        <a th:href="@{/students(page=${currentPage + 1}, size=${pageSize}, keyword=${keyword}, department=${selectedDept}, status=${selectedStatus}, year=${selectedYear}, sortField=${sortField}, sortDir=${sortDir})}"
+                           class="page-btn" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'" th:disabled="${currentPage >= totalPages - 1}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer Fragment -->
+        <div th:replace="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal Dialog -->
+<div class="modal-overlay" id="deleteConfirmModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="bi bi-exclamation-triangle-fill text-danger"></i> Confirm Student Deletion</h3>
+            <button type="button" class="modal-close-btn" onclick="closeModal('deleteConfirmModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size: 15px; color: var(--text-main); margin-bottom: 12px;">
+                Are you sure you want to permanently delete <strong id="deleteStudentNameSpan">this student</strong> from the university records?
+            </p>
+            <p style="font-size: 13px; color: var(--text-muted); background: var(--color-danger-bg); padding: 12px; border-radius: var(--radius-sm); border-left: 4px solid var(--color-danger);">
+                <i class="bi bi-info-circle-fill"></i> Warning: This will remove all associated enrollment details and attendance records. This action cannot be undone.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-outline-sms" onclick="closeModal('deleteConfirmModal')">Cancel</button>
+            <form id="deleteStudentForm" method="post" action="">
+                <button type="submit" class="btn-primary-sms" style="background-color: var(--color-danger); border-color: var(--color-danger);">
+                    <i class="bi bi-trash"></i> Yes, Delete Student
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/students.js}"></script>
+</body>
+</html>

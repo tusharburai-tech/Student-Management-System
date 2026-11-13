@@ -1,0 +1,368 @@
+/* ===================================================================
+   RESPONSIVE DESIGN BREAKPOINTS
+   =================================================================== */
+
+/* Collapsed Sidebar on Desktop */
+body.sidebar-collapsed .sidebar {
+    width: var(--sidebar-collapsed-width);
+}
+
+body.sidebar-collapsed .brand-text,
+body.sidebar-collapsed .menu-section-label,
+body.sidebar-collapsed .menu-link span,
+body.sidebar-collapsed .user-info-text,
+body.sidebar-collapsed .logout-icon-btn {
+    display: none;
+}
+
+body.sidebar-collapsed .main-content-wrapper {
+    margin-left: var(--sidebar-collapsed-width);
+}
+
+body.sidebar-collapsed .sidebar-header {
+    justify-content: center;
+    padding: 0;
+}
+
+body.sidebar-collapsed .menu-link {
+    justify-content: center;
+    padding: 12px;
+}
+
+body.sidebar-collapsed .menu-link i {
+    font-size: 22px;
+}
+
+body.sidebar-collapsed .user-mini-card {
+    justify-content: center;
+    padding: 6px;
+}
+
+/* Tooltip on hover when collapsed */
+body.sidebar-collapsed .sidebar .menu-link {
+    position: relative;
+}
+
+body.sidebar-collapsed .sidebar .menu-link::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 14px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-4px);
+    background: #172554;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.2);
+    z-index: 1200;
+}
+
+body.sidebar-collapsed .sidebar .menu-link:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* Mobile Sidebar Backdrop */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+}
+
+/* 1200px Breakpoint (Laptops & Small Desktops) */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .analytics-grid,
+    .dashboard-bottom-grid,
+    .profile-grid-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 992px Breakpoint (Tablets) */
+@media (max-width: 992px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    body.mobile-nav-active .sidebar {
+        transform: translateX(0);
+    }
+
+    body.mobile-nav-active .sidebar-backdrop {
+        display: block;
+    }
+
+    .main-content-wrapper {
+        margin-left: 0 !important;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .filter-form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .filter-group:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .topbar-search {
+        display: none;
+    }
+
+    .main-content {
+        padding: 20px 16px 36px;
+    }
+
+    .welcome-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+        padding: 24px;
+    }
+
+    .form-grid-3col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filter-card {
+        padding: 18px;
+    }
+
+    .modal-container {
+        width: min(720px, calc(100vw - 32px));
+        max-width: calc(100vw - 32px);
+        margin: 16px auto;
+    }
+}
+
+/* 768px Breakpoint (Phones) */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .form-grid-2col,
+    .form-grid-3col {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .filter-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .date-indicator {
+        display: none;
+    }
+
+    .topbar {
+        padding: 0 16px;
+    }
+
+    .profile-hero-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .profile-hero-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .pagination-container {
+        flex-direction: column;
+        gap: 14px;
+        align-items: center;
+    }
+
+    .sms-card-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding: 18px;
+    }
+
+    .sms-card-body {
+        padding: 18px;
+    }
+
+    .welcome-action,
+    .welcome-action .btn-welcome {
+        width: 100%;
+    }
+
+    .form-card {
+        padding: 22px 18px;
+    }
+
+    .page-header-block {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .form-actions-bar,
+    .modal-footer {
+        justify-content: stretch;
+    }
+
+    .form-actions-bar > *,
+    .modal-footer > * {
+        flex: 1 1 auto;
+    }
+
+    .modal-container {
+        width: calc(100vw - 24px);
+        max-width: calc(100vw - 24px);
+        max-height: calc(100vh - 24px);
+        margin: 12px auto;
+        overflow-y: auto;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding-inline: 16px;
+    }
+
+    .dashboard-bottom-grid,
+    .analytics-grid,
+    .profile-grid-layout {
+        gap: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .main-content {
+        padding: 18px 14px 28px;
+    }
+
+    .topbar {
+        padding-inline: 12px;
+    }
+
+    .topbar-left {
+        gap: 10px;
+    }
+
+    .page-title {
+        font-size: 16px;
+    }
+
+    .welcome-banner {
+        padding: 20px;
+    }
+
+    .welcome-text h1 {
+        font-size: 22px;
+    }
+
+    .stat-card {
+        min-height: 150px;
+        padding: 18px;
+    }
+}
+
+/* Attendance and Reports layouts */
+@media (max-width: 1200px) {
+    .reports-page .report-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 992px) {
+    .attendance-page .attendance-filter-grid,
+    .reports-page .report-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .attendance-page .attendance-filter-grid > .d-flex,
+    .reports-page .report-filter-grid > .d-flex {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+    }
+
+    .reports-page .page-header-block > .d-flex {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .attendance-page .attendance-filter-grid,
+    .reports-page .report-filter-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .attendance-page .attendance-filter-grid > .d-flex,
+    .reports-page .report-filter-grid > .d-flex {
+        grid-column: auto;
+        justify-content: stretch;
+    }
+
+    .attendance-page .attendance-filter-grid > .d-flex > *,
+    .reports-page .report-filter-grid > .d-flex > * {
+        flex: 1 1 auto;
+    }
+
+    .reports-page .report-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .reports-page .page-header-block > .d-flex {
+        width: 100%;
+    }
+
+    .reports-page .page-header-block > .d-flex > * {
+        flex: 1 1 180px;
+    }
+
+    .attendance-page #batchAttendanceModal .modal-body > div:first-child {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .reports-page .report-stats-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .attendance-page .filter-card,
+    .reports-page .filter-card {
+        padding: 14px;
+    }
+
+    .attendance-page #batchAttendanceModal .modal-body > div:first-child {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+}

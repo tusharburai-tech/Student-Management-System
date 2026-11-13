@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Course &mdash; Student Management System</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<div class="app-wrapper">
+    <!-- Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content-wrapper">
+        <!-- Topbar Fragment -->
+        <div th:replace="~{fragments/topbar :: topbar('Create Course', 'Courses', 'New Syllabus')}"></div>
+
+        <main class="main-content">
+            <!-- Header Block -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                <div>
+                    <h2 style="font-size: 22px; font-weight: 800; color: var(--primary-navy); margin: 0 0 4px;">New Academic Course</h2>
+                    <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Add a new course curriculum to the university catalog.</p>
+                </div>
+                <a th:href="@{/courses}" class="btn-outline-sms">
+                    <i class="bi bi-arrow-left"></i> Back to Courses
+                </a>
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-card" style="max-width: 840px;">
+                <form th:action="@{/courses/add}" th:object="${newCourse}" method="post">
+                    <div class="form-section-title">
+                        <div class="form-section-icon"><i class="bi bi-journal-plus"></i></div>
+                        <span>Course Information &amp; Department Allocation</span>
+                    </div>
+
+                    <div class="form-grid-2col">
+                        <div class="form-group">
+                            <label class="form-label" for="courseCode">Course Code <span class="required">*</span></label>
+                            <input type="text" id="courseCode" th:field="*{courseCode}" class="form-control-sms" placeholder="e.g. CS204" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="courseName">Course Title <span class="required">*</span></label>
+                            <input type="text" id="courseName" th:field="*{courseName}" class="form-control-sms" placeholder="e.g. Data Structures & Algorithms" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="department">Academic Department <span class="required">*</span></label>
+                            <select id="department" th:field="*{department}" class="form-select-sms" required>
+                                <option value="" disabled selected>Select Department</option>
+                                <option th:each="d : ${departments}" th:value="${d.name()}" th:text="${d.fullName}">Computer Science</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="instructor">Lead Professor / Instructor</label>
+                            <input type="text" id="instructor" th:field="*{instructor}" class="form-control-sms" placeholder="e.g. Dr. Amanda Chen">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="semester">Semester Schedule</label>
+                            <select id="semester" th:field="*{semester}" class="form-select-sms">
+                                <option value="Semester 1">Semester 1</option>
+                                <option value="Semester 2">Semester 2</option>
+                                <option value="Semester 3">Semester 3</option>
+                                <option value="Semester 4">Semester 4</option>
+                                <option value="Semester 5">Semester 5</option>
+                                <option value="Semester 6">Semester 6</option>
+                                <option value="Semester 7">Semester 7</option>
+                                <option value="Semester 8">Semester 8</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="maxEnrollment">Max Capacity (Seats)</label>
+                            <input type="number" id="maxEnrollment" th:field="*{maxEnrollment}" class="form-control-sms" value="60" min="10" max="300">
+                        </div>
+                        <div class="form-group form-group-full">
+                            <label class="form-label" for="description">Course Syllabus Description</label>
+                            <textarea id="description" th:field="*{description}" class="form-control-sms" rows="3" placeholder="Describe the topics and prerequisites..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions-bar">
+                        <a th:href="@{/courses}" class="btn-outline-sms">Cancel</a>
+                        <button type="submit" class="btn-primary-sms">
+                            <i class="bi bi-check-circle"></i> Save Course
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- Footer Fragment -->
+        <div th:replace="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

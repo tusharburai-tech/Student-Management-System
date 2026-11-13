@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar" class="sidebar" id="appSidebar">
+    <!-- Brand Header -->
+    <div class="sidebar-header">
+        <a th:href="@{/dashboard}" class="brand-link">
+            <div class="brand-icon-wrapper">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <div class="brand-text">
+                <span class="brand-title">SMS Admin</span>
+                <span class="brand-subtitle">University Administration</span>
+            </div>
+        </a>
+    </div>
+
+    <!-- Navigation Menu -->
+    <ul class="sidebar-menu">
+        <li class="menu-section-label">Main Navigation</li>
+        
+        <li class="menu-item" th:classappend="${activeNav == 'dashboard'} ? 'active'">
+            <a th:href="@{/dashboard}" class="menu-link" data-tooltip="Dashboard" title="Dashboard">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li class="menu-item" th:classappend="${activeNav == 'students'} ? 'active'">
+            <a th:href="@{/students}" class="menu-link" data-tooltip="Students" title="Students">
+                <i class="bi bi-people-fill"></i>
+                <span>Students</span>
+            </a>
+        </li>
+
+        <li class="menu-item" th:classappend="${activeNav == 'courses'} ? 'active'">
+            <a th:href="@{/courses}" class="menu-link" data-tooltip="Courses" title="Courses">
+                <i class="bi bi-journal-bookmark-fill"></i>
+                <span>Courses</span>
+            </a>
+        </li>
+
+        <li class="menu-item" th:classappend="${activeNav == 'attendance'} ? 'active'">
+            <a th:href="@{/attendance}" class="menu-link" data-tooltip="Attendance" title="Attendance">
+                <i class="bi bi-calendar2-check-fill"></i>
+                <span>Attendance</span>
+            </a>
+        </li>
+
+        <li class="menu-section-label">Analytics & Tools</li>
+
+        <li class="menu-item" th:classappend="${activeNav == 'reports'} ? 'active'">
+            <a th:href="@{/reports}" class="menu-link" data-tooltip="Reports" title="Reports">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span>Reports</span>
+            </a>
+        </li>
+
+        <li class="menu-item" th:classappend="${activeNav == 'settings'} ? 'active'">
+            <a th:href="@{/settings}" class="menu-link" data-tooltip="Settings" title="Settings">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Sidebar Bottom Profile / Footer -->
+    <div class="sidebar-footer">
+        <div class="user-mini-card">
+            <div class="user-avatar-sm">AD</div>
+            <div class="user-info-text">
+                <p class="user-name">Dr. Arthur Pendelton</p>
+                <p class="user-role">Dean of Administration</p>
+            </div>
+            <a th:href="@{/logout}" class="logout-icon-btn" title="Sign Out">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</aside>
+</body>
+</html>
