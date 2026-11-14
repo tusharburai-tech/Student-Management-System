@@ -2,3 +2,6 @@ target/
 .idea/
 .DS_Store
 *.iml
+
+# H2 database files
+data/

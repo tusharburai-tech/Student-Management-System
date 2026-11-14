@@ -136,6 +136,45 @@ Wait for the startup output to say `Tomcat started on port 8081`, then open **ht
    ./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
    ```
 
+### Deploy to Google Cloud Run from GitHub
+
+This project can be built as a Java application from its GitHub repository and deployed as a Cloud Run web service. The repository root must contain `pom.xml`. The app reads Cloud Run's `PORT` environment variable and defaults to port `8080` for local development.
+
+> **Billing requirement:** Google Cloud requires a billing account and supported payment method for a standard Cloud Run deployment. If account setup is blocked at payment verification, ask your school for a Google Cloud project or temporary Skills Boost lab access before continuing.
+
+#### 1. Prepare and push the project to GitHub
+
+1. Push the project to a GitHub repository. A private repository is supported; you will authorize Google's Cloud Build GitHub app to access it in the next section.
+2. Make sure the latest commit is on the branch you plan to deploy (for example, `main`) and that `pom.xml` is at the repository root.
+3. Do not commit `target/`, `.idea/`, or database passwords. The included `.gitignore` excludes generated and IDE files.
+
+#### 2. Create the Cloud Run deployment from the GitHub repository
+
+1. In Google Cloud Console, select or create a project and complete billing setup.
+2. Open **Cloud Run** and select **Create service** / **Connect repository**.
+3. Choose **Cloud Build**, connect GitHub, authorize access to this private repository, then select the repository and deployment branch.
+4. Configure the build to use the repository root and Java buildpacks (the root `pom.xml` identifies this as a Maven Java application; a Dockerfile is not required for source deployment).
+5. Choose a region close to your users, such as Mumbai (`asia-south1`), and configure the service. Enable public access only if you want anyone with the URL to reach the login page.
+6. If prompted, enable Cloud Run, Cloud Build, and Artifact Registry APIs. Start the deployment and wait for the build and service health checks to finish.
+
+Google's source deployment uses Cloud Build to build and deploy the Java service. After the first deployment, the connected repository can be configured to build and deploy new commits automatically. See [Deploy services from source](https://docs.cloud.google.com/run/docs/deploying-source-code) and [continuous deployment from a repository](https://docs.cloud.google.com/run/docs/continuous-deployment).
+
+#### 3. Open the deployed website
+
+Open the service URL shown in Cloud Run and append `/login`, for example:
+
+```text
+https://YOUR-SERVICE-URL.run.app/login
+```
+
+The login page currently displays demo administrator credentials. Change or remove these demo credentials before making the service public.
+
+#### Database behavior and persistent storage
+
+The default profile uses an in-memory H2 database, so this is suitable for an initial demo but student data can be lost when a Cloud Run instance stops or restarts. Cloud Run instances are not a persistent place to store database files. For data that must remain available, create a Cloud SQL for PostgreSQL instance, attach it to the Cloud Run service, add the Cloud SQL Java Connector dependency, and configure the PostgreSQL JDBC URL, username, and password through Cloud Run environment variables or Secret Manager. Do not activate the current `postgres` profile in the cloud unchanged: `application-postgres.properties` points to `localhost` and contains local example credentials. Follow Google's [Cloud Run to Cloud SQL guide](https://docs.cloud.google.com/sql/docs/postgres/connect-run) for the connector and connection setup.
+
+Cloud SQL is a separate billable service. Review current pricing and clean up unused Cloud Run services and databases when you finish experimenting.
+
 ### Building Executable JAR
 ```bash
 ./mvnw clean package
