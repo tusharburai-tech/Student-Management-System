@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Directory &mdash; Student Management System</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/students.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="appSidebar">
+        <div class="sidebar-header">
+            <a href="/" class="brand-link">
+                <div class="brand-icon-wrapper">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">SMS Admin</span>
+                    <span class="brand-subtitle">University Administration</span>
+                </div>
+            </a>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-section-label">Main Navigation</li>
+            <li class="menu-item">
+                <a href="/" class="menu-link" data-tooltip="Dashboard" title="Dashboard">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="menu-item active">
+                <a href="/students" class="menu-link" data-tooltip="Students" title="Students">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Students</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/courses" class="menu-link" data-tooltip="Courses" title="Courses">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>Courses</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/attendance" class="menu-link" data-tooltip="Attendance" title="Attendance">
+                    <i class="bi bi-calendar2-check-fill"></i>
+                    <span>Attendance</span>
+                </a>
+            </li>
+            <li class="menu-section-label">Analytics & Tools</li>
+            <li class="menu-item">
+                <a href="/reports" class="menu-link" data-tooltip="Reports" title="Reports">
+                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/settings" class="menu-link" data-tooltip="Settings" title="Settings">
+                    <i class="bi bi-gear-fill"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="user-mini-card">
+                <div class="user-avatar-sm">AD</div>
+                <div class="user-info-text">
+                    <p class="user-name">Dr. Arthur Pendelton</p>
+                    <p class="user-role">Dean of Administration</p>
+                </div>
+                <a href="/login" class="logout-icon-btn" title="Sign Out">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation">
+                    <i class="bi bi-list"></i>
+                </button>
+                <button type="button" class="btn-icon-sms d-none d-lg-inline-flex" id="sidebarToggleBtn" title="Toggle Sidebar">
+                    <i class="bi bi-layout-sidebar"></i>
+                </button>
+                <div class="page-headline">
+                    <h1 class="page-title">Student Management</h1>
+                    <ul class="breadcrumbs">
+                        <li><a href="/"><i class="bi bi-house-door"></i> Home</a></li>
+                        <li class="separator">/</li>
+                        <li><span>Administration</span></li>
+                        <li class="separator">/</li>
+                        <li><span class="active-crumb">Students</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="date-indicator">
+                    <i class="bi bi-calendar-event"></i>
+                    <span>Mon, Nov 14, 2026</span>
+                </div>
+                <div class="notification-btn" title="3 Notifications" onclick="alert('3 new notifications.')">
+                    <i class="bi bi-bell"></i>
+                    <span class="notification-badge"></span>
+                </div>
+                <div class="topbar-user-dropdown" onclick="window.location.href='/settings'">
+                    <div class="user-avatar-sm">AD</div>
+                    <div class="user-info-text d-none d-md-block">
+                        <p class="user-name">Dr. Arthur Pendelton</p>
+                        <p class="user-role">Dean of Administration</p>
+                    </div>
+                    <i class="bi bi-chevron-down text-muted" style="font-size: 11px;"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Page Header Block -->
+            <div class="page-header-block">
+                <div class="page-header-info">
+                    <h2>Student Directory</h2>
+                    <p>Manage student records, matriculation numbers, academic semesters, and enrollment status.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn-outline-sms" onclick="exportCSV()"><i class="bi bi-cloud-arrow-down"></i> Export CSV</button>
+                    <button class="btn-primary-sms" onclick="openModal('addStudentModal')"><i class="bi bi-person-plus-fill"></i> + Add Student</button>
+                </div>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="filter-card">
+                <div class="filter-form-grid">
+                    <div class="filter-group">
+                        <label class="filter-label" for="keyword">Search Records</label>
+                        <div style="position: relative;">
+                            <input type="text" id="keyword" class="filter-input" placeholder="Search by name, ID or email..." style="width: 100%; padding-left: 36px;" oninput="filterTable()">
+                            <i class="bi bi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-subtle);"></i>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label" for="departmentFilter">Department</label>
+                        <select id="departmentFilter" class="filter-input" onchange="filterTable()">
+                            <option value="">All Departments</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Civil Engineering">Civil Engineering</option>
+                            <option value="Electrical Engineering">Electrical Engineering</option>
+                            <option value="Business Administration">Business Administration</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label" for="statusFilter">Status</label>
+                        <select id="statusFilter" class="filter-input" onchange="filterTable()">
+                            <option value="">All Statuses</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Graduated">Graduated</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn-outline-sms" style="height: 42px;" onclick="resetFilter()" title="Reset filters">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students Table Card -->
+            <div class="sms-card" style="overflow: hidden;">
+                <div class="table-responsive">
+                    <table class="sms-table" id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Student Profile</th>
+                                <th>Contact Phone</th>
+                                <th>Department &amp; Semester</th>
+                                <th>Enrollment Date</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTableBody">
+                            <tr>
+                                <td><span style="font-weight: 700; color: var(--primary-blue);">SMS-2024-101</span></td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar">AW</div>
+                                        <div class="student-name-box">
+                                            <span class="student-fullname">Alexander Wright</span>
+                                            <span class="student-email">a.wright@university.edu</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>+1 (555) 234-8901</td>
+                                <td>
+                                    <div style="display: flex; flex-direction: column;">
+                                        <span style="font-weight: 600;">Computer Science</span>
+                                        <span style="font-size: 12px; color: var(--text-muted);">Semester 4</span>
+                                    </div>
+                                </td>
+                                <td>Aug 20, 2023</td>
+                                <td><span class="status-badge badge-status-active">Active</span></td>
+                                <td style="text-align: right;">
+                                    <div style="display: inline-flex; gap: 6px;">
+                                        <button class="btn-icon-sms" title="View Profile" onclick="alert('Viewing: Alexander Wright')"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-icon-sms danger" title="Delete" onclick="deleteStudent(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-weight: 700; color: var(--primary-blue);">SMS-2024-102</span></td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar" style="background: linear-gradient(135deg, #0284C7, #38BDF8);">SR</div>
+                                        <div class="student-name-box">
+                                            <span class="student-fullname">Sophia Maria Rodriguez</span>
+                                            <span class="student-email">s.rodriguez@university.edu</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>+1 (555) 345-6712</td>
+                                <td>
+                                    <div style="display: flex; flex-direction: column;">
+                                        <span style="font-weight: 600;">Information Technology</span>
+                                        <span style="font-size: 12px; color: var(--text-muted);">Semester 4</span>
+                                    </div>
+                                </td>
+                                <td>Aug 20, 2023</td>
+                                <td><span class="status-badge badge-status-active">Active</span></td>
+                                <td style="text-align: right;">
+                                    <div style="display: inline-flex; gap: 6px;">
+                                        <button class="btn-icon-sms" title="View Profile" onclick="alert('Viewing: Sophia Rodriguez')"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-icon-sms danger" title="Delete" onclick="deleteStudent(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-weight: 700; color: var(--primary-blue);">SMS-2024-103</span></td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar" style="background: linear-gradient(135deg, #059669, #34D399);">EM</div>
+                                        <div class="student-name-box">
+                                            <span class="student-fullname">Ethan James Mitchell</span>
+                                            <span class="student-email">e.mitchell@university.edu</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>+1 (555) 456-7890</td>
+                                <td>
+                                    <div style="display: flex; flex-direction: column;">
+                                        <span style="font-weight: 600;">Mechanical Engineering</span>
+                                        <span style="font-size: 12px; color: var(--text-muted);">Semester 6</span>
+                                    </div>
+                                </td>
+                                <td>Aug 15, 2022</td>
+                                <td><span class="status-badge badge-status-active">Active</span></td>
+                                <td style="text-align: right;">
+                                    <div style="display: inline-flex; gap: 6px;">
+                                        <button class="btn-icon-sms" title="View Profile" onclick="alert('Viewing: Ethan Mitchell')"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-icon-sms danger" title="Delete" onclick="deleteStudent(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-weight: 700; color: var(--primary-blue);">SMS-2024-104</span></td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar" style="background: linear-gradient(135deg, #7C3AED, #A78BFA);">ET</div>
+                                        <div class="student-name-box">
+                                            <span class="student-fullname">Emma Claire Thompson</span>
+                                            <span class="student-email">e.thompson@university.edu</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>+1 (555) 567-8901</td>
+                                <td>
+                                    <div style="display: flex; flex-direction: column;">
+                                        <span style="font-weight: 600;">Business Administration</span>
+                                        <span style="font-size: 12px; color: var(--text-muted);">Semester 2</span>
+                                    </div>
+                                </td>
+                                <td>Aug 25, 2024</td>
+                                <td><span class="status-badge badge-status-active">Active</span></td>
+                                <td style="text-align: right;">
+                                    <div style="display: inline-flex; gap: 6px;">
+                                        <button class="btn-icon-sms" title="View Profile" onclick="alert('Viewing: Emma Thompson')"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-icon-sms danger" title="Delete" onclick="deleteStudent(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-weight: 700; color: var(--primary-blue);">SMS-2024-105</span></td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar" style="background: linear-gradient(135deg, #F59E0B, #FBBF24);">LP</div>
+                                        <div class="student-name-box">
+                                            <span class="student-fullname">Liam Patel</span>
+                                            <span class="student-email">l.patel@university.edu</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>+1 (555) 678-9012</td>
+                                <td>
+                                    <div style="display: flex; flex-direction: column;">
+                                        <span style="font-weight: 600;">Computer Science</span>
+                                        <span style="font-size: 12px; color: var(--text-muted);">Semester 6</span>
+                                    </div>
+                                </td>
+                                <td>Aug 15, 2022</td>
+                                <td><span class="status-badge badge-status-active">Active</span></td>
+                                <td style="text-align: right;">
+                                    <div style="display: inline-flex; gap: 6px;">
+                                        <button class="btn-icon-sms" title="View Profile" onclick="alert('Viewing: Liam Patel')"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-icon-sms danger" title="Delete" onclick="deleteStudent(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-weight: 700; color: var(--primary-blue);">SMS-2024-106</span></td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar" style="background: linear-gradient(135deg, #10B981, #6EE7B7);">OB</div>
+                                        <div class="student-name-box">
+                                            <span class="student-fullname">Olivia Grace Bennett</span>
+                                            <span class="student-email">o.bennett@university.edu</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>+1 (555) 789-0123</td>
+                                <td>
+                                    <div style="display: flex; flex-direction: column;">
+                                        <span style="font-weight: 600;">Civil Engineering</span>
+                                        <span style="font-size: 12px; color: var(--text-muted);">Semester 4</span>
+                                    </div>
+                                </td>
+                                <td>Aug 20, 2023</td>
+                                <td><span class="status-badge badge-status-active">Active</span></td>
+                                <td style="text-align: right;">
+                                    <div style="display: inline-flex; gap: 6px;">
+                                        <button class="btn-icon-sms" title="View Profile" onclick="alert('Viewing: Olivia Bennett')"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-icon-sms danger" title="Delete" onclick="deleteStudent(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-weight: 700; color: var(--primary-blue);">SMS-2024-107</span></td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar" style="background: linear-gradient(135deg, #64748B, #94A3B8);">ND</div>
+                                        <div class="student-name-box">
+                                            <span class="student-fullname">Noah Christopher Davis</span>
+                                            <span class="student-email">n.davis@university.edu</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>+1 (555) 890-1234</td>
+                                <td>
+                                    <div style="display: flex; flex-direction: column;">
+                                        <span style="font-weight: 600;">Electrical Engineering</span>
+                                        <span style="font-size: 12px; color: var(--text-muted);">Semester 2</span>
+                                    </div>
+                                </td>
+                                <td>Aug 25, 2024</td>
+                                <td><span class="status-badge badge-status-inactive">Inactive</span></td>
+                                <td style="text-align: right;">
+                                    <div style="display: inline-flex; gap: 6px;">
+                                        <button class="btn-icon-sms" title="View Profile" onclick="alert('Viewing: Noah Davis')"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-icon-sms danger" title="Delete" onclick="deleteStudent(this)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-container" style="padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color);">
+                    <div class="pagination-info" style="font-size: 13px; color: var(--text-muted);">
+                        Showing <strong>1</strong> to <strong>7</strong> of <strong>7</strong> records
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div>
+                <span>&copy; 2026 <strong>Student Management System (SMS)</strong>. Premium University Administration Suite.</span>
+            </div>
+            <div class="d-flex gap-3">
+                <a href="/reports">Audit Reports</a>
+                <span>&bull;</span>
+                <a href="/settings">System Status: Online</a>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- Modal: Add Student -->
+<div class="modal-overlay" id="addStudentModal">
+    <div class="modal-container" style="max-width: 600px;">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="bi bi-person-plus text-primary"></i> Add New Student</h3>
+            <button type="button" class="modal-close-btn" onclick="closeModal('addStudentModal')">&times;</button>
+        </div>
+        <form onsubmit="handleAddStudent(event)">
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" id="newFullName" class="form-control-sms" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" id="newEmail" class="form-control-sms" required placeholder="john@university.edu">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                    <div class="form-group">
+                        <label class="form-label">Department *</label>
+                        <select id="newDepartment" class="form-select-sms" required>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Civil Engineering">Civil Engineering</option>
+                            <option value="Electrical Engineering">Electrical Engineering</option>
+                            <option value="Business Administration">Business Administration</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone *</label>
+                        <input type="text" id="newPhone" class="form-control-sms" required placeholder="+1 (555) 000-0000">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Semester</label>
+                    <select id="newSemester" class="form-select-sms">
+                        <option value="Semester 1">Semester 1</option>
+                        <option value="Semester 2">Semester 2</option>
+                        <option value="Semester 3">Semester 3</option>
+                        <option value="Semester 4">Semester 4</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline-sms" onclick="closeModal('addStudentModal')">Cancel</button>
+                <button type="submit" class="btn-primary-sms">Enroll Student</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/js/main.js"></script>
+<script>
+    function filterTable() {
+        const keyword = document.getElementById('keyword').value.toLowerCase();
+        const dept = document.getElementById('departmentFilter').value;
+        const status = document.getElementById('statusFilter').value;
+        const rows = document.querySelectorAll('#studentTableBody tr');
+
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            const matchesKeyword = text.includes(keyword);
+            const matchesDept = !dept || text.includes(dept.toLowerCase());
+            const matchesStatus = !status || text.includes(status.toLowerCase());
+            row.style.display = (matchesKeyword && matchesDept && matchesStatus) ? '' : 'none';
+        });
+    }
+
+    function resetFilter() {
+        document.getElementById('keyword').value = '';
+        document.getElementById('departmentFilter').value = '';
+        document.getElementById('statusFilter').value = '';
+        filterTable();
+    }
+
+    function deleteStudent(btn) {
+        if (confirm('Are you sure you want to delete this student record?')) {
+            btn.closest('tr').remove();
+        }
+    }
+
+    function handleAddStudent(e) {
+        e.preventDefault();
+        const name = document.getElementById('newFullName').value;
+        const email = document.getElementById('newEmail').value;
+        const dept = document.getElementById('newDepartment').value;
+        const phone = document.getElementById('newPhone').value;
+        const semester = document.getElementById('newSemester').value;
+
+        const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'ST';
+        const id = 'SMS-2024-' + Math.floor(100 + Math.random() * 900);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><span style="font-weight: 700; color: var(--primary-blue);">${id}</span></td>
+            <td>
+                <div class="student-cell">
+                    <div class="student-avatar">${initials}</div>
+                    <div class="student-name-box">
+                        <span class="student-fullname">${name}</span>
+                        <span class="student-email">${email}</span>
+                    </div>
+                </div>
+            </td>
+            <td>${phone}</td>
+            <td>
+                <div style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 600;">${dept}</span>
+                    <span style="font-size: 12px; color: var(--text-muted);">${semester}</span>
+                </div>
+            </td>
+            <td>Nov 14, 2026</td>
+            <td><span class="status-badge badge-status-active">Active</span></td>
+            <td style="text-align: right;">
+                <div style="display: inline-flex; gap: 6px;">
+                    <button class="btn-icon-sms" title="View Profile" onclick="alert('Viewing: ${name}')"><i class="bi bi-eye"></i></button>
+                    <button class="btn-icon-sms danger" title="Delete" onclick="deleteStudent(this)"><i class="bi bi-trash"></i></button>
+                </div>
+            </td>
+        `;
+        document.getElementById('studentTableBody').prepend(tr);
+        closeModal('addStudentModal');
+        alert('Student ' + name + ' enrolled successfully!');
+    }
+
+    function exportCSV() {
+        const rows = document.querySelectorAll('#studentTableBody tr');
+        let csv = 'ID,Name,Email,Department,Status\n';
+        rows.forEach(r => {
+            const cols = r.querySelectorAll('td');
+            if (cols.length >= 6) {
+                const id = cols[0].innerText.trim();
+                const name = cols[1].querySelector('.student-fullname')?.innerText.trim() || '';
+                const email = cols[1].querySelector('.student-email')?.innerText.trim() || '';
+                const dept = cols[3].innerText.replace(/\n/g, ' ').trim();
+                const status = cols[5].innerText.trim();
+                csv += `"${id}","${name}","${email}","${dept}","${status}"\n`;
+            }
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'students.csv';
+        a.click();
+    }
+</script>
+</body>
+</html>

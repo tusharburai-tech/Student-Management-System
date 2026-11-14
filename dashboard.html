@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Dashboard &mdash; Student Management System</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="appSidebar">
+        <div class="sidebar-header">
+            <a href="/" class="brand-link">
+                <div class="brand-icon-wrapper">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">SMS Admin</span>
+                    <span class="brand-subtitle">University Administration</span>
+                </div>
+            </a>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-section-label">Main Navigation</li>
+            <li class="menu-item active">
+                <a href="/" class="menu-link" data-tooltip="Dashboard" title="Dashboard">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/students" class="menu-link" data-tooltip="Students" title="Students">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Students</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/courses" class="menu-link" data-tooltip="Courses" title="Courses">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>Courses</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/attendance" class="menu-link" data-tooltip="Attendance" title="Attendance">
+                    <i class="bi bi-calendar2-check-fill"></i>
+                    <span>Attendance</span>
+                </a>
+            </li>
+            <li class="menu-section-label">Analytics & Tools</li>
+            <li class="menu-item">
+                <a href="/reports" class="menu-link" data-tooltip="Reports" title="Reports">
+                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/settings" class="menu-link" data-tooltip="Settings" title="Settings">
+                    <i class="bi bi-gear-fill"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="user-mini-card">
+                <div class="user-avatar-sm">AD</div>
+                <div class="user-info-text">
+                    <p class="user-name">Dr. Arthur Pendelton</p>
+                    <p class="user-role">Dean of Administration</p>
+                </div>
+                <a href="/login" class="logout-icon-btn" title="Sign Out">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation">
+                    <i class="bi bi-list"></i>
+                </button>
+                <button type="button" class="btn-icon-sms d-none d-lg-inline-flex" id="sidebarToggleBtn" title="Toggle Sidebar">
+                    <i class="bi bi-layout-sidebar"></i>
+                </button>
+                <div class="page-headline">
+                    <h1 class="page-title">University Dashboard</h1>
+                    <ul class="breadcrumbs">
+                        <li><a href="/"><i class="bi bi-house-door"></i> Home</a></li>
+                        <li class="separator">/</li>
+                        <li><span>Administration</span></li>
+                        <li class="separator">/</li>
+                        <li><span class="active-crumb">Overview</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <form action="/students" method="get" class="topbar-search">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" name="keyword" id="globalSearchInput" placeholder="Quick search students... (Ctrl+K)" autocomplete="off">
+                </form>
+                <div class="date-indicator">
+                    <i class="bi bi-calendar-event"></i>
+                    <span id="headerDate">Monday, Nov 14, 2026</span>
+                </div>
+                <div class="notification-btn" title="3 Unread Notifications" onclick="alert('You have 3 academic system alerts: 1 pending grade submission, 2 leave requests.')">
+                    <i class="bi bi-bell"></i>
+                    <span class="notification-badge"></span>
+                </div>
+                <div class="topbar-user-dropdown" onclick="window.location.href='/settings'">
+                    <div class="user-avatar-sm">AD</div>
+                    <div class="user-info-text d-none d-md-block">
+                        <p class="user-name">Dr. Arthur Pendelton</p>
+                        <p class="user-role">Dean of Administration</p>
+                    </div>
+                    <i class="bi bi-chevron-down text-muted" style="font-size: 11px;"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Welcome Section Banner -->
+            <section class="welcome-banner">
+                <div class="welcome-text">
+                    <h1>Good Morning, Admin!</h1>
+                    <p>Here's what's happening at your university today across departments and lecture halls.</p>
+                    <div class="welcome-date-badge">
+                        <i class="bi bi-clock-history"></i>
+                        <span>Academic Session 2025&ndash;2026</span>
+                    </div>
+                </div>
+                <div class="welcome-action">
+                    <a href="/students" class="btn-welcome">
+                        <i class="bi bi-person-plus-fill"></i> + Add New Student
+                    </a>
+                </div>
+            </section>
+
+            <!-- 4 Statistics Cards -->
+            <section class="stats-grid">
+                <!-- Card 1: Total Students -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon blue">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+                        <span class="stat-growth positive">
+                            <i class="bi bi-arrow-up-short"></i>
+                            <span>+12.5%</span>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value">2,450</h3>
+                        <p class="stat-label">Total Enrolled Students</p>
+                        <p class="stat-footer-text">Higher than last academic cycle</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Total Courses -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon indigo">
+                            <i class="bi bi-book-half"></i>
+                        </div>
+                        <span class="stat-growth positive">
+                            <i class="bi bi-arrow-up-short"></i>
+                            <span>+8.2%</span>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value">48</h3>
+                        <p class="stat-label">Active Academic Courses</p>
+                        <p class="stat-footer-text">Across 6 academic faculties</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Attendance Rate -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon emerald">
+                            <i class="bi bi-clipboard2-check-fill"></i>
+                        </div>
+                        <span class="stat-growth positive">
+                            <i class="bi bi-arrow-up-short"></i>
+                            <span>+4.5%</span>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value">92.8%</h3>
+                        <p class="stat-label">Overall Attendance Rate</p>
+                        <p class="stat-footer-text">Average across morning sessions</p>
+                    </div>
+                </div>
+
+                <!-- Card 4: Active Departments -->
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon purple">
+                            <i class="bi bi-buildings-fill"></i>
+                        </div>
+                        <span class="stat-growth neutral">
+                            <i class="bi bi-plus-circle"></i>
+                            <span>+2 depts</span>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value">6</h3>
+                        <p class="stat-label">Active Departments</p>
+                        <p class="stat-footer-text">Engineering, Tech &amp; Business</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section (Charts) -->
+            <section class="analytics-grid">
+                <!-- Enrollment Line / Area Chart -->
+                <div class="sms-card">
+                    <div class="sms-card-header">
+                        <div>
+                            <h3 class="sms-card-title">Student Enrollment Trends</h3>
+                            <p class="sms-card-subtitle">Monthly enrollment comparison between current and previous academic year</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="/reports" class="btn-outline-sms" style="font-size: 12px; padding: 6px 12px;">
+                                <i class="bi bi-bar-chart-line"></i> View Detailed Report
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sms-card-body">
+                        <div class="chart-container-lg">
+                            <canvas id="enrollmentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Department Distribution Doughnut Chart -->
+                <div class="sms-card">
+                    <div class="sms-card-header">
+                        <div>
+                            <h3 class="sms-card-title">Faculty Distribution</h3>
+                            <p class="sms-card-subtitle">Student share by discipline</p>
+                        </div>
+                    </div>
+                    <div class="sms-card-body">
+                        <div class="chart-container-sm">
+                            <canvas id="deptChart"
+                                    data-labels="Computer Science|Information Tech|Mechanical Eng|Civil Eng|Electrical Eng|Business Admin"
+                                    data-values="35|25|15|10|8|7"></canvas>
+                        </div>
+                        <ul class="doughnut-legend-list">
+                            <li class="doughnut-legend-item">
+                                <span>
+                                    <span class="legend-color-dot" style="background:#2563EB;"></span>
+                                    <span class="legend-name">Computer Science</span>
+                                </span>
+                                <span class="legend-value">858 students</span>
+                            </li>
+                            <li class="doughnut-legend-item">
+                                <span>
+                                    <span class="legend-color-dot" style="background:#0284C7;"></span>
+                                    <span class="legend-name">Information Technology</span>
+                                </span>
+                                <span class="legend-value">612 students</span>
+                            </li>
+                            <li class="doughnut-legend-item">
+                                <span>
+                                    <span class="legend-color-dot" style="background:#059669;"></span>
+                                    <span class="legend-name">Mechanical Engineering</span>
+                                </span>
+                                <span class="legend-value">367 students</span>
+                            </li>
+                            <li class="doughnut-legend-item">
+                                <span>
+                                    <span class="legend-color-dot" style="background:#F59E0B;"></span>
+                                    <span class="legend-name">Civil Engineering</span>
+                                </span>
+                                <span class="legend-value">245 students</span>
+                            </li>
+                            <li class="doughnut-legend-item">
+                                <span>
+                                    <span class="legend-color-dot" style="background:#7C3AED;"></span>
+                                    <span class="legend-name">Electrical Engineering</span>
+                                </span>
+                                <span class="legend-value">196 students</span>
+                            </li>
+                            <li class="doughnut-legend-item">
+                                <span>
+                                    <span class="legend-color-dot" style="background:#64748B;"></span>
+                                    <span class="legend-name">Business Administration</span>
+                                </span>
+                                <span class="legend-value">172 students</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bottom Row: Recent Students Table + Recent Activity -->
+            <section class="dashboard-bottom-grid">
+                <!-- Recent Students -->
+                <div class="sms-card">
+                    <div class="sms-card-header">
+                        <div>
+                            <h3 class="sms-card-title">Recently Enrolled Students</h3>
+                            <p class="sms-card-subtitle">Newest student matriculations in the system</p>
+                        </div>
+                        <a href="/students" class="btn-outline-sms" style="font-size: 13px; padding: 6px 14px;">
+                            View All Students <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="sms-card-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="sms-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Student Name</th>
+                                        <th>Department</th>
+                                        <th>Enrollment</th>
+                                        <th>Status</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span style="font-weight: 700; font-size: 13px; color: var(--primary-blue);">SMS-2024-101</span></td>
+                                        <td>
+                                            <div class="student-cell">
+                                                <div class="student-avatar">AW</div>
+                                                <div class="student-name-box">
+                                                    <span class="student-fullname">Alexander Wright</span>
+                                                    <span class="student-email">a.wright@university.edu</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Computer Science</td>
+                                        <td>Aug 20, 2023</td>
+                                        <td><span class="status-badge badge-status-active">Active</span></td>
+                                        <td style="text-align: right;">
+                                            <div style="display: inline-flex; gap: 6px;">
+                                                <a href="/students" class="btn-icon-sms" title="View Details"><i class="bi bi-eye"></i></a>
+                                                <a href="/students" class="btn-icon-sms" title="Edit Student"><i class="bi bi-pencil"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span style="font-weight: 700; font-size: 13px; color: var(--primary-blue);">SMS-2024-102</span></td>
+                                        <td>
+                                            <div class="student-cell">
+                                                <div class="student-avatar" style="background: linear-gradient(135deg, #0284C7, #38BDF8);">SR</div>
+                                                <div class="student-name-box">
+                                                    <span class="student-fullname">Sophia Maria Rodriguez</span>
+                                                    <span class="student-email">s.rodriguez@university.edu</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Information Technology</td>
+                                        <td>Aug 20, 2023</td>
+                                        <td><span class="status-badge badge-status-active">Active</span></td>
+                                        <td style="text-align: right;">
+                                            <div style="display: inline-flex; gap: 6px;">
+                                                <a href="/students" class="btn-icon-sms" title="View Details"><i class="bi bi-eye"></i></a>
+                                                <a href="/students" class="btn-icon-sms" title="Edit Student"><i class="bi bi-pencil"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span style="font-weight: 700; font-size: 13px; color: var(--primary-blue);">SMS-2024-103</span></td>
+                                        <td>
+                                            <div class="student-cell">
+                                                <div class="student-avatar" style="background: linear-gradient(135deg, #059669, #34D399);">EM</div>
+                                                <div class="student-name-box">
+                                                    <span class="student-fullname">Ethan James Mitchell</span>
+                                                    <span class="student-email">e.mitchell@university.edu</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Mechanical Engineering</td>
+                                        <td>Aug 15, 2022</td>
+                                        <td><span class="status-badge badge-status-active">Active</span></td>
+                                        <td style="text-align: right;">
+                                            <div style="display: inline-flex; gap: 6px;">
+                                                <a href="/students" class="btn-icon-sms" title="View Details"><i class="bi bi-eye"></i></a>
+                                                <a href="/students" class="btn-icon-sms" title="Edit Student"><i class="bi bi-pencil"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span style="font-weight: 700; font-size: 13px; color: var(--primary-blue);">SMS-2024-104</span></td>
+                                        <td>
+                                            <div class="student-cell">
+                                                <div class="student-avatar" style="background: linear-gradient(135deg, #7C3AED, #A78BFA);">ET</div>
+                                                <div class="student-name-box">
+                                                    <span class="student-fullname">Emma Claire Thompson</span>
+                                                    <span class="student-email">e.thompson@university.edu</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Business Administration</td>
+                                        <td>Aug 25, 2024</td>
+                                        <td><span class="status-badge badge-status-active">Active</span></td>
+                                        <td style="text-align: right;">
+                                            <div style="display: inline-flex; gap: 6px;">
+                                                <a href="/students" class="btn-icon-sms" title="View Details"><i class="bi bi-eye"></i></a>
+                                                <a href="/students" class="btn-icon-sms" title="Edit Student"><i class="bi bi-pencil"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span style="font-weight: 700; font-size: 13px; color: var(--primary-blue);">SMS-2024-105</span></td>
+                                        <td>
+                                            <div class="student-cell">
+                                                <div class="student-avatar" style="background: linear-gradient(135deg, #F59E0B, #FBBF24);">LP</div>
+                                                <div class="student-name-box">
+                                                    <span class="student-fullname">Liam Patel</span>
+                                                    <span class="student-email">l.patel@university.edu</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Computer Science</td>
+                                        <td>Aug 15, 2022</td>
+                                        <td><span class="status-badge badge-status-active">Active</span></td>
+                                        <td style="text-align: right;">
+                                            <div style="display: inline-flex; gap: 6px;">
+                                                <a href="/students" class="btn-icon-sms" title="View Details"><i class="bi bi-eye"></i></a>
+                                                <a href="/students" class="btn-icon-sms" title="Edit Student"><i class="bi bi-pencil"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Panel -->
+                <div class="sms-card">
+                    <div class="sms-card-header">
+                        <div>
+                            <h3 class="sms-card-title">Recent Activity</h3>
+                            <p class="sms-card-subtitle">Real-time system actions</p>
+                        </div>
+                        <i class="bi bi-activity text-muted"></i>
+                    </div>
+                    <div class="sms-card-body">
+                        <ul class="activity-feed">
+                            <li class="activity-item">
+                                <div class="activity-icon badge-activity-primary">
+                                    <i class="bi bi-person-plus"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4 class="activity-title">New Student Enrolled</h4>
+                                    <p class="activity-desc">Mia Isabella Rossi joined Information Technology</p>
+                                    <span class="activity-time">10:30 AM</span>
+                                </div>
+                            </li>
+                            <li class="activity-item">
+                                <div class="activity-icon badge-activity-success">
+                                    <i class="bi bi-clipboard-check"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4 class="activity-title">Attendance Session Marked</h4>
+                                    <p class="activity-desc">CS204: 38 students marked present by Prof. Amanda Chen</p>
+                                    <span class="activity-time">09:15 AM</span>
+                                </div>
+                            </li>
+                            <li class="activity-item">
+                                <div class="activity-icon badge-activity-info">
+                                    <i class="bi bi-book"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4 class="activity-title">Course Syllabus Updated</h4>
+                                    <p class="activity-desc">IT305 Cloud Architecture prerequisites revised</p>
+                                    <span class="activity-time">Yesterday</span>
+                                </div>
+                            </li>
+                            <li class="activity-item">
+                                <div class="activity-icon badge-activity-warning">
+                                    <i class="bi bi-pencil-square"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4 class="activity-title">Student Profile Updated</h4>
+                                    <p class="activity-desc">Alexander Wright updated residential contact address</p>
+                                    <span class="activity-time">Yesterday</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div>
+                <span>&copy; 2026 <strong>Student Management System (SMS)</strong>. Premium University Administration Suite.</span>
+            </div>
+            <div class="d-flex gap-3">
+                <a href="/reports">Audit Reports</a>
+                <span>&bull;</span>
+                <a href="/settings">System Status: Online</a>
+                <span>&bull;</span>
+                <a href="/settings">Help &amp; Support</a>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- Chart.js and Custom JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/charts.js"></script>
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Catalog &mdash; Student Management System</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="appSidebar">
+        <div class="sidebar-header">
+            <a href="/" class="brand-link">
+                <div class="brand-icon-wrapper">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">SMS Admin</span>
+                    <span class="brand-subtitle">University Administration</span>
+                </div>
+            </a>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-section-label">Main Navigation</li>
+            <li class="menu-item">
+                <a href="/" class="menu-link" data-tooltip="Dashboard" title="Dashboard">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/students" class="menu-link" data-tooltip="Students" title="Students">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Students</span>
+                </a>
+            </li>
+            <li class="menu-item active">
+                <a href="/courses" class="menu-link" data-tooltip="Courses" title="Courses">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>Courses</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/attendance" class="menu-link" data-tooltip="Attendance" title="Attendance">
+                    <i class="bi bi-calendar2-check-fill"></i>
+                    <span>Attendance</span>
+                </a>
+            </li>
+            <li class="menu-section-label">Analytics & Tools</li>
+            <li class="menu-item">
+                <a href="/reports" class="menu-link" data-tooltip="Reports" title="Reports">
+                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/settings" class="menu-link" data-tooltip="Settings" title="Settings">
+                    <i class="bi bi-gear-fill"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="user-mini-card">
+                <div class="user-avatar-sm">AD</div>
+                <div class="user-info-text">
+                    <p class="user-name">Dr. Arthur Pendelton</p>
+                    <p class="user-role">Dean of Administration</p>
+                </div>
+                <a href="/login" class="logout-icon-btn" title="Sign Out">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation">
+                    <i class="bi bi-list"></i>
+                </button>
+                <button type="button" class="btn-icon-sms d-none d-lg-inline-flex" id="sidebarToggleBtn" title="Toggle Sidebar">
+                    <i class="bi bi-layout-sidebar"></i>
+                </button>
+                <div class="page-headline">
+                    <h1 class="page-title">Course Management</h1>
+                    <ul class="breadcrumbs">
+                        <li><a href="/"><i class="bi bi-house-door"></i> Home</a></li>
+                        <li class="separator">/</li>
+                        <li><span>Academics</span></li>
+                        <li class="separator">/</li>
+                        <li><span class="active-crumb">Courses</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="date-indicator">
+                    <i class="bi bi-calendar-event"></i>
+                    <span>Mon, Nov 14, 2026</span>
+                </div>
+                <div class="topbar-user-dropdown" onclick="window.location.href='/settings'">
+                    <div class="user-avatar-sm">AD</div>
+                    <div class="user-info-text d-none d-md-block">
+                        <p class="user-name">Dr. Arthur Pendelton</p>
+                        <p class="user-role">Dean of Administration</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Header Block -->
+            <div class="page-header-block">
+                <div class="page-header-info">
+                    <h2>Course Catalog &amp; Curricula</h2>
+                    <p>Manage syllabus details, department course codes, semester scheduling, and enrollment caps.</p>
+                </div>
+                <button type="button" class="btn-primary-sms" onclick="openModal('addCourseModal')">
+                    <i class="bi bi-plus-circle-fill"></i> + Add New Course
+                </button>
+            </div>
+
+            <!-- Course Statistics Cards -->
+            <section class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px;">
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon indigo"><i class="bi bi-book-half"></i></div>
+                        <span class="stat-growth positive"><i class="bi bi-arrow-up-short"></i> +6 new</span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value">48</h3>
+                        <p class="stat-label">Total Curricula</p>
+                        <p class="stat-footer-text">Published this semester</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon emerald"><i class="bi bi-person-check-fill"></i></div>
+                        <span class="stat-growth positive"><i class="bi bi-check2"></i> 94% cap</span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value">2,180</h3>
+                        <p class="stat-label">Active Enrollments</p>
+                        <p class="stat-footer-text">Across all academic units</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-top">
+                        <div class="stat-icon blue"><i class="bi bi-mortarboard-fill"></i></div>
+                        <span class="stat-growth neutral">6 Units</span>
+                    </div>
+                    <div>
+                        <h3 class="stat-value">32</h3>
+                        <p class="stat-label">Faculty Instructors</p>
+                        <p class="stat-footer-text">Tenured professors &amp; lecturers</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Table Card -->
+            <div class="sms-card" style="overflow: hidden;">
+                <div class="table-responsive">
+                    <table class="sms-table" id="coursesTable">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Course Title</th>
+                                <th>Department</th>
+                                <th>Instructor</th>
+                                <th>Schedule</th>
+                                <th>Capacity</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courseTableBody">
+                            <tr>
+                                <td><span style="font-weight: 800; color: var(--primary-blue); background: var(--primary-light); padding: 4px 8px; border-radius: var(--radius-sm); font-size: 13px;">CS101</span></td>
+                                <td>
+                                    <span style="font-weight: 700; color: var(--primary-navy);">Introduction to Computer Science</span>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 2px 0 0;">Computational thinking and Python programming.</p>
+                                </td>
+                                <td>Computer Science</td>
+                                <td>Dr. Robert Vance</td>
+                                <td>Semester 1 (4 Mos)</td>
+                                <td>60 Seats</td>
+                                <td><span class="status-badge badge-status-active">Active</span></td>
+                                <td style="text-align: right;"><button class="btn-icon-sms danger" onclick="this.closest('tr').remove()"><i class="bi bi-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-weight: 800; color: var(--primary-blue); background: var(--primary-light); padding: 4px 8px; border-radius: var(--radius-sm); font-size: 13px;">CS204</span></td>
+                                <td>
+                                    <span style="font-weight: 700; color: var(--primary-navy);">Data Structures &amp; Algorithms</span>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 2px 0 0;">Trees, graphs, dynamic programming, and complexity.</p>
+                                </td>
+                                <td>Computer Science</td>
+                                <td>Prof. Amanda Chen</td>
+                                <td>Semester 3 (4 Mos)</td>
+                                <td>50 Seats</td>
+                                <td><span class="status-badge badge-status-active">Active</span></td>
+                                <td style="text-align: right;"><button class="btn-icon-sms danger" onclick="this.closest('tr').remove()"><i class="bi bi-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-weight: 800; color: var(--primary-blue); background: var(--primary-light); padding: 4px 8px; border-radius: var(--radius-sm); font-size: 13px;">IT305</span></td>
+                                <td>
+                                    <span style="font-weight: 700; color: var(--primary-navy);">Cloud Architecture &amp; DevOps</span>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 2px 0 0;">Enterprise infra, Docker/Kubernetes, and CI/CD pipelines.</p>
+                                </td>
+                                <td>Information Technology</td>
+                                <td>Dr. Michael Scott</td>
+                                <td>Semester 5 (4 Mos)</td>
+                                <td>45 Seats</td>
+                                <td><span class="status-badge badge-status-active">Active</span></td>
+                                <td style="text-align: right;"><button class="btn-icon-sms danger" onclick="this.closest('tr').remove()"><i class="bi bi-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-weight: 800; color: var(--primary-blue); background: var(--primary-light); padding: 4px 8px; border-radius: var(--radius-sm); font-size: 13px;">ME201</span></td>
+                                <td>
+                                    <span style="font-weight: 700; color: var(--primary-navy);">Thermodynamics &amp; Heat Transfer</span>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 2px 0 0;">Power cycles and heat conduction/convection.</p>
+                                </td>
+                                <td>Mechanical Engineering</td>
+                                <td>Dr. Harold Evans</td>
+                                <td>Semester 4 (4 Mos)</td>
+                                <td>55 Seats</td>
+                                <td><span class="status-badge badge-status-active">Active</span></td>
+                                <td style="text-align: right;"><button class="btn-icon-sms danger" onclick="this.closest('tr').remove()"><i class="bi bi-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div>&copy; 2026 <strong>Student Management System (SMS)</strong>.</div>
+            <div class="d-flex gap-3"><a href="/reports">Reports</a> &bull; <a href="/settings">Settings</a></div>
+        </footer>
+    </div>
+</div>
+
+<!-- Modal: Add Course -->
+<div class="modal-overlay" id="addCourseModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="bi bi-book-plus text-primary"></i> Add New Academic Course</h3>
+            <button type="button" class="modal-close-btn" onclick="closeModal('addCourseModal')">&times;</button>
+        </div>
+        <form onsubmit="handleAddCourse(event)">
+            <div class="modal-body">
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label class="form-label">Course Code *</label>
+                    <input type="text" id="courseCode" class="form-control-sms" placeholder="e.g. CS401" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label class="form-label">Course Title *</label>
+                    <input type="text" id="courseTitle" class="form-control-sms" placeholder="e.g. Distributed Systems" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label class="form-label">Department *</label>
+                    <select id="courseDept" class="form-select-sms" required>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label class="form-label">Instructor</label>
+                    <input type="text" id="courseInstructor" class="form-control-sms" placeholder="e.g. Prof. David Miller">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline-sms" onclick="closeModal('addCourseModal')">Cancel</button>
+                <button type="submit" class="btn-primary-sms">Create Course</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/js/main.js"></script>
+<script>
+    function handleAddCourse(e) {
+        e.preventDefault();
+        const code = document.getElementById('courseCode').value;
+        const title = document.getElementById('courseTitle').value;
+        const dept = document.getElementById('courseDept').value;
+        const inst = document.getElementById('courseInstructor').value || 'Staff';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><span style="font-weight: 800; color: var(--primary-blue); background: var(--primary-light); padding: 4px 8px; border-radius: var(--radius-sm); font-size: 13px;">${code}</span></td>
+            <td><span style="font-weight: 700; color: var(--primary-navy);">${title}</span></td>
+            <td>${dept}</td>
+            <td>${inst}</td>
+            <td>Semester 1 (4 Mos)</td>
+            <td>50 Seats</td>
+            <td><span class="status-badge badge-status-active">Active</span></td>
+            <td style="text-align: right;"><button class="btn-icon-sms danger" onclick="this.closest('tr').remove()"><i class="bi bi-trash"></i></button></td>
+        `;
+        document.getElementById('courseTableBody').prepend(tr);
+        closeModal('addCourseModal');
+    }
+</script>
+</body>
+</html>

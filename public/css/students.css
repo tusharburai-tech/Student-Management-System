@@ -1,0 +1,324 @@
+/* ===================================================================
+   STUDENT MANAGEMENT SPECIFIC STYLES
+   =================================================================== */
+
+/* Page Header Block */
+.page-header-block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.page-header-info h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary-navy);
+    margin: 0 0 4px 0;
+}
+
+.page-header-info p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Filter Card */
+.filter-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-subtle);
+}
+
+.filter-form-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.filter-input {
+    height: 42px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    padding: 8px 14px;
+    font-size: 13px;
+    background: var(--bg-subtle);
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.filter-input:focus {
+    outline: none;
+    background: #FFFFFF;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Pagination Bar */
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    background: #FFFFFF;
+    border-top: 1px solid var(--border-color);
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+}
+
+.pagination-info {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.page-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background: #FFFFFF;
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: var(--primary-light);
+    color: var(--primary-blue);
+    border-color: var(--primary-border);
+}
+
+.page-btn.active {
+    background: var(--primary-blue);
+    color: #FFFFFF;
+    border-color: var(--primary-blue);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Empty State Card */
+.empty-state {
+    padding: 60px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-state-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: var(--primary-light);
+    color: var(--primary-blue);
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.empty-state h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-navy);
+    margin: 0 0 6px 0;
+}
+
+.empty-state p {
+    font-size: 14px;
+    color: var(--text-muted);
+    max-width: 400px;
+    margin: 0 0 20px 0;
+}
+
+/* ===================================================================
+   STUDENT PROFILE VIEW
+   =================================================================== */
+.profile-hero-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profile-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.profile-avatar-lg {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #172554, #2563EB);
+    color: #FFFFFF;
+    font-size: 32px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+.profile-details-hero h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--primary-navy);
+    margin: 0 0 6px 0;
+}
+
+.profile-meta-tags {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.profile-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.profile-meta-item i {
+    color: var(--primary-blue);
+}
+
+.profile-grid-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 28px;
+}
+
+/* Keep directory and profile layouts aligned with the shared design system. */
+.page-header-block {
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.page-header-info {
+    min-width: 0;
+}
+
+.page-header-info h2 {
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+}
+
+.page-header-info p {
+    line-height: 1.55;
+}
+
+.filter-card {
+    padding: 20px;
+}
+
+.filter-form-grid {
+    grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(130px, 1fr)) auto;
+    gap: 14px;
+}
+
+.profile-grid-layout,
+.profile-hero-card,
+.profile-hero-left {
+    min-width: 0;
+}
+
+.info-details-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-details-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 14px;
+}
+
+.info-details-table td.label-col {
+    width: 35%;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.info-details-table td.value-col {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.progress-stat-card {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.progress-track {
+    height: 8px;
+    background-color: #E2E8F0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--primary-blue);
+    border-radius: 4px;
+}
+
+.progress-fill.success {
+    background-color: var(--color-success);
+}

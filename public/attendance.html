@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Attendance &mdash; Student Management System</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body class="attendance-page">
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="appSidebar">
+        <div class="sidebar-header">
+            <a href="/" class="brand-link">
+                <div class="brand-icon-wrapper"><i class="bi bi-mortarboard-fill"></i></div>
+                <div class="brand-text">
+                    <span class="brand-title">SMS Admin</span>
+                    <span class="brand-subtitle">University Administration</span>
+                </div>
+            </a>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="menu-section-label">Main Navigation</li>
+            <li class="menu-item"><a href="/" class="menu-link"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a></li>
+            <li class="menu-item"><a href="/students" class="menu-link"><i class="bi bi-people-fill"></i><span>Students</span></a></li>
+            <li class="menu-item"><a href="/courses" class="menu-link"><i class="bi bi-journal-bookmark-fill"></i><span>Courses</span></a></li>
+            <li class="menu-item active"><a href="/attendance" class="menu-link"><i class="bi bi-calendar2-check-fill"></i><span>Attendance</span></a></li>
+            <li class="menu-section-label">Analytics & Tools</li>
+            <li class="menu-item"><a href="/reports" class="menu-link"><i class="bi bi-file-earmark-bar-graph-fill"></i><span>Reports</span></a></li>
+            <li class="menu-item"><a href="/settings" class="menu-link"><i class="bi bi-gear-fill"></i><span>Settings</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="user-mini-card">
+                <div class="user-avatar-sm">AD</div>
+                <div class="user-info-text"><p class="user-name">Dr. Arthur Pendelton</p><p class="user-role">Dean</p></div>
+                <a href="/login" class="logout-icon-btn"><i class="bi bi-box-arrow-right"></i></a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button type="button" class="mobile-menu-btn" id="mobileMenuBtn"><i class="bi bi-list"></i></button>
+                <div class="page-headline">
+                    <h1 class="page-title">Attendance Tracking</h1>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="date-indicator"><i class="bi bi-calendar-event"></i><span>Nov 14, 2026</span></div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="page-header-block">
+                <div class="page-header-info">
+                    <h2>Daily Roll Call &amp; Attendance Tracking</h2>
+                    <p>Track student presence, verify excuses, inspect historical logs, and record classroom attendance.</p>
+                </div>
+                <button type="button" class="btn-primary-sms" onclick="markAllPresent()">
+                    <i class="bi bi-check2-all"></i> Mark All Present Today
+                </button>
+            </div>
+
+            <div class="sms-card" style="overflow: hidden;">
+                <div class="table-responsive">
+                    <table class="sms-table" id="attendanceTable">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Course</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar">AW</div>
+                                        <div class="student-name-box">
+                                            <span class="student-fullname">Alexander Wright</span>
+                                            <span class="student-email">CS101</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Intro to Computer Science</td>
+                                <td>Nov 14, 2026</td>
+                                <td><span class="status-badge badge-attend-present">Present</span></td>
+                                <td>On time</td>
+                                <td style="text-align: right;"><button class="btn-outline-sms" style="padding: 4px 10px; font-size: 12px;" onclick="toggleStatus(this)">Toggle</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar" style="background:#0284C7;">SR</div>
+                                        <div class="student-name-box">
+                                            <span class="student-fullname">Sophia Rodriguez</span>
+                                            <span class="student-email">IT305</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Cloud Architecture</td>
+                                <td>Nov 14, 2026</td>
+                                <td><span class="status-badge badge-attend-present">Present</span></td>
+                                <td>On time</td>
+                                <td style="text-align: right;"><button class="btn-outline-sms" style="padding: 4px 10px; font-size: 12px;" onclick="toggleStatus(this)">Toggle</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar" style="background:#DC2626;">EM</div>
+                                        <div class="student-name-box">
+                                            <span class="student-fullname">Ethan Mitchell</span>
+                                            <span class="student-email">ME201</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Thermodynamics</td>
+                                <td>Nov 14, 2026</td>
+                                <td><span class="status-badge badge-attend-absent">Absent</span></td>
+                                <td>Medical leave</td>
+                                <td style="text-align: right;"><button class="btn-outline-sms" style="padding: 4px 10px; font-size: 12px;" onclick="toggleStatus(this)">Toggle</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <div>&copy; 2026 <strong>Student Management System (SMS)</strong>.</div>
+        </footer>
+    </div>
+</div>
+
+<script src="/js/main.js"></script>
+<script>
+    function toggleStatus(btn) {
+        const row = btn.closest('tr');
+        const badge = row.querySelector('.status-badge');
+        if (badge.classList.contains('badge-attend-present')) {
+            badge.className = 'status-badge badge-attend-absent';
+            badge.innerText = 'Absent';
+        } else {
+            badge.className = 'status-badge badge-attend-present';
+            badge.innerText = 'Present';
+        }
+    }
+    function markAllPresent() {
+        document.querySelectorAll('#attendanceTable .status-badge').forEach(b => {
+            b.className = 'status-badge badge-attend-present';
+            b.innerText = 'Present';
+        });
+        alert('All marked Present!');
+    }
+</script>
+</body>
+</html>
