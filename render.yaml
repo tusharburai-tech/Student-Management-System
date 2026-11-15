@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: student-management-system
+    name: sms-student-management
     runtime: docker
     plan: free
     branch: main
@@ -10,3 +10,5 @@ services:
         value: 8080
       - key: SPRING_PROFILES_ACTIVE
         value: default
+      - key: JAVA_TOOL_OPTIONS
+        value: "-Xmx384m"
