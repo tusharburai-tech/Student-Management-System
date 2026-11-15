@@ -8,13 +8,16 @@ import com.sms.service.AttendanceService;
 import com.sms.service.CourseService;
 import com.sms.service.StudentService;
 import jakarta.validation.Valid;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Controller
@@ -29,6 +32,11 @@ public class StudentController {
         this.studentService = studentService;
         this.courseService = courseService;
         this.attendanceService = attendanceService;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
     @GetMapping
@@ -69,7 +77,10 @@ public class StudentController {
     @GetMapping("/add")
     public String showAddForm(Model model) {
         if (!model.containsAttribute("student")) {
-            model.addAttribute("student", new Student());
+            Student student = new Student();
+            student.setStudentId(studentService.generateNextStudentId());
+            student.setEnrollmentDate(LocalDate.now());
+            model.addAttribute("student", student);
         }
         populateFormReferenceData(model);
         model.addAttribute("isEdit", false);
@@ -82,6 +93,16 @@ public class StudentController {
                                     BindingResult bindingResult,
                                     RedirectAttributes redirectAttributes,
                                     Model model) {
+        // Check for duplicate Student ID
+        if (student.getStudentId() != null && studentService.existsByStudentId(student.getStudentId())) {
+            bindingResult.rejectValue("studentId", "duplicate", "Student ID '" + student.getStudentId() + "' is already in use.");
+        }
+
+        // Check for duplicate Email
+        if (student.getEmail() != null && studentService.existsByEmail(student.getEmail())) {
+            bindingResult.rejectValue("email", "duplicate", "Email address '" + student.getEmail() + "' is already registered.");
+        }
+
         if (bindingResult.hasErrors()) {
             populateFormReferenceData(model);
             model.addAttribute("isEdit", false);
@@ -89,9 +110,17 @@ public class StudentController {
             return "students/add-student";
         }
 
-        studentService.saveStudent(student);
-        redirectAttributes.addFlashAttribute("successMessage", "Student " + student.getFullName() + " registered successfully!");
-        return "redirect:/students";
+        try {
+            studentService.saveStudent(student);
+            redirectAttributes.addFlashAttribute("successMessage", "Student " + student.getFullName() + " registered successfully!");
+            return "redirect:/students";
+        } catch (Exception ex) {
+            populateFormReferenceData(model);
+            model.addAttribute("isEdit", false);
+            model.addAttribute("activeNav", "students");
+            model.addAttribute("errorMessage", "Error saving student: " + (ex.getMessage() != null ? ex.getMessage() : "Database error occurred."));
+            return "students/add-student";
+        }
     }
 
     @GetMapping("/edit/{id}")
@@ -115,6 +144,16 @@ public class StudentController {
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes,
                                      Model model) {
+        // Check for duplicate Student ID excluding current student
+        if (student.getStudentId() != null && studentService.existsByStudentIdAndIdNot(student.getStudentId(), id)) {
+            bindingResult.rejectValue("studentId", "duplicate", "Student ID '" + student.getStudentId() + "' is already in use.");
+        }
+
+        // Check for duplicate Email excluding current student
+        if (student.getEmail() != null && studentService.existsByEmailAndIdNot(student.getEmail(), id)) {
+            bindingResult.rejectValue("email", "duplicate", "Email address '" + student.getEmail() + "' is already registered.");
+        }
+
         if (bindingResult.hasErrors()) {
             populateFormReferenceData(model);
             model.addAttribute("isEdit", true);
@@ -122,10 +161,18 @@ public class StudentController {
             return "students/edit-student";
         }
 
-        student.setId(id);
-        studentService.saveStudent(student);
-        redirectAttributes.addFlashAttribute("successMessage", "Student " + student.getFullName() + " updated successfully!");
-        return "redirect:/students/" + id;
+        try {
+            student.setId(id);
+            studentService.saveStudent(student);
+            redirectAttributes.addFlashAttribute("successMessage", "Student " + student.getFullName() + " updated successfully!");
+            return "redirect:/students/" + id;
+        } catch (Exception ex) {
+            populateFormReferenceData(model);
+            model.addAttribute("isEdit", true);
+            model.addAttribute("activeNav", "students");
+            model.addAttribute("errorMessage", "Error updating student: " + (ex.getMessage() != null ? ex.getMessage() : "Database error occurred."));
+            return "students/edit-student";
+        }
     }
 
     @GetMapping("/{id}")

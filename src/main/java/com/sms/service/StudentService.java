@@ -50,6 +50,32 @@ public class StudentService {
         return studentRepository.findByStudentId(studentId);
     }
 
+    public boolean existsByStudentId(String studentId) {
+        return studentRepository.existsByStudentId(studentId);
+    }
+
+    public boolean existsByEmail(String email) {
+        return studentRepository.existsByEmail(email);
+    }
+
+    public boolean existsByStudentIdAndIdNot(String studentId, Long id) {
+        return studentRepository.existsByStudentIdAndIdNot(studentId, id);
+    }
+
+    public boolean existsByEmailAndIdNot(String email, Long id) {
+        return studentRepository.existsByEmailAndIdNot(email, id);
+    }
+
+    public String generateNextStudentId() {
+        long count = studentRepository.count() + 101;
+        String generated = "SMS-2025-" + count;
+        while (studentRepository.existsByStudentId(generated)) {
+            count++;
+            generated = "SMS-2025-" + count;
+        }
+        return generated;
+    }
+
     public Student saveStudent(Student student) {
         boolean isNew = (student.getId() == null);
         if (student.getStudentId() == null || student.getStudentId().isBlank()) {

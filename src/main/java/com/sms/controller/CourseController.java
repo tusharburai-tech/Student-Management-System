@@ -56,8 +56,12 @@ public class CourseController {
             redirectAttributes.addFlashAttribute("errorMessage", "Please correct the errors in the course form.");
             return "redirect:/courses";
         }
-        courseService.saveCourse(course);
-        redirectAttributes.addFlashAttribute("successMessage", "Course " + course.getCourseName() + " (" + course.getCourseCode() + ") created successfully!");
+        try {
+            courseService.saveCourse(course);
+            redirectAttributes.addFlashAttribute("successMessage", "Course " + course.getCourseName() + " (" + course.getCourseCode() + ") created successfully!");
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error creating course: " + (ex.getMessage() != null ? ex.getMessage() : "Course Code may already exist."));
+        }
         return "redirect:/courses";
     }
 
@@ -70,9 +74,13 @@ public class CourseController {
             redirectAttributes.addFlashAttribute("errorMessage", "Error updating course. Please check inputs.");
             return "redirect:/courses";
         }
-        course.setId(id);
-        courseService.saveCourse(course);
-        redirectAttributes.addFlashAttribute("successMessage", "Course " + course.getCourseName() + " updated successfully!");
+        try {
+            course.setId(id);
+            courseService.saveCourse(course);
+            redirectAttributes.addFlashAttribute("successMessage", "Course " + course.getCourseName() + " updated successfully!");
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating course: " + (ex.getMessage() != null ? ex.getMessage() : "Database error occurred."));
+        }
         return "redirect:/courses";
     }
 

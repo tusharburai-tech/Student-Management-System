@@ -40,6 +40,12 @@
 
             <!-- Form Card -->
             <div class="form-card">
+                <!-- Error Alert Banner -->
+                <div th:if="${errorMessage != null}" style="margin-bottom: 20px; padding: 12px 16px; border-radius: 8px; background: #fee2e2; border: 1px solid #f87171; color: #991b1b; display: flex; align-items: center; gap: 10px;">
+                    <i class="bi bi-exclamation-triangle-fill" style="font-size: 18px;"></i>
+                    <span th:text="${errorMessage}">Error message</span>
+                </div>
+
                 <form th:action="@{/students/add}" th:object="${student}" method="post">
                     <!-- SECTION 1: Personal Information -->
                     <div class="form-section-title">
