@@ -136,6 +136,24 @@ Wait for the startup output to say `Tomcat started on port 8081`, then open **ht
    ./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
    ```
 
+### Connecting to Supabase (Cloud PostgreSQL)
+
+Supabase provides a free, hosted PostgreSQL database in the cloud with a built-in Table Editor UI.
+
+1. **Create a Supabase Project:**
+   - Go to [supabase.com](https://supabase.com) and create a free project.
+   - Save your database password securely.
+2. **Get Connection Details:**
+   - In Supabase, go to **Project Settings** → **Database** → **Connection string** → Select **JDBC**.
+   - The JDBC URL format looks like:
+     `jdbc:postgresql://aws-0-[region].pooler.supabase.com:6543/postgres?sslmode=require` (or direct: `jdbc:postgresql://db.[ref].supabase.co:5432/postgres?sslmode=require`)
+3. **Configure Environment Variables (in Render or locally):**
+   - `SPRING_PROFILES_ACTIVE`: `postgres`
+   - `SPRING_DATASOURCE_URL`: `jdbc:postgresql://<HOST>:<PORT>/postgres?sslmode=require`
+   - `SPRING_DATASOURCE_USERNAME`: `postgres.<PROJECT_REF>` (or `postgres`)
+   - `SPRING_DATASOURCE_PASSWORD`: `<YOUR_SUPABASE_PASSWORD>`
+4. Hibernate automatically creates all tables on startup. You can also view or run `supabase-schema.sql` in the Supabase SQL Editor.
+
 ### Deploy to Google Cloud Run from GitHub
 
 This project can be built as a Java application from its GitHub repository and deployed as a Cloud Run web service. The repository root must contain `pom.xml`. The app reads Cloud Run's `PORT` environment variable and defaults to port `8080` for local development.
