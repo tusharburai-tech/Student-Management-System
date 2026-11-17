@@ -5,3 +5,4 @@ target/
 
 # H2 database files
 data/
+.env
